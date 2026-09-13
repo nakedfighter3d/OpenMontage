@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "id": "local-wan3-t2v",
+  "name": "Locally supplied WAN 3.0 text-to-video workflow",
+  "workflow_path": "local/workflows/wan3-t2v-api.json",
+  "output_node": "99",
+  "mode": "text_to_video",
+  "inputs": {
+    "prompt": {"node_id": "10", "input_name": "text"},
+    "negative_prompt": {"node_id": "11", "input_name": "text"},
+    "duration_seconds": {
+      "node_id": "20",
+      "input_name": "duration",
+      "accepted_values": [2, 5, 10, 15, 20, 25, 30]
+    },
+    "aspect_ratio": {"node_id": "20", "input_name": "aspect_ratio"},
+    "generate_audio": {"node_id": "20", "input_name": "audio"}
+  }
+}

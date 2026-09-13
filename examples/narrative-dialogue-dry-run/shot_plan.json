@@ -14,6 +14,7 @@
       "subjects": ["mara", "eli"],
       "blocking": "Mara sits screen-left by the window; Eli sits screen-right by the aisle; Mara slides the envelope from her right hand toward table center.",
       "action": "Mara says the departure time and pushes the envelope halfway across the table; Eli stays still.",
+      "dialogue": [{"speaker_id": "mara", "text": "It leaves at eleven.", "language": "English"}],
       "performance_intent": "Mara hides urgency inside practical delivery; Eli's stillness should register as resistance.",
       "camera": {
         "shot_size": "medium-wide two-shot",
@@ -62,6 +63,7 @@
       "subjects": ["eli", "mara"],
       "blocking": "Eli remains aisle-side; Mara's soft shoulder is foreground-left; Eli looks down to the envelope then toward Mara only on the final word.",
       "action": "Eli does not touch the envelope and says she should leave before the rain.",
+      "dialogue": [{"speaker_id": "eli", "text": "You should get there before the rain.", "language": "English"}],
       "performance_intent": "Gentle evasion with a late, guilty eyeline; no overt sadness.",
       "camera": {
         "shot_size": "medium close-up over Mara's shoulder",
@@ -158,6 +160,7 @@
       "subjects": ["mara", "eli"],
       "blocking": "Mara remains window-side; Eli's soft shoulder is foreground-right; Mara looks down, takes one breath, then looks toward Eli and says the line.",
       "action": "Mara says 'I know' and holds his eyeline for one beat.",
+      "dialogue": [{"speaker_id": "mara", "text": "I know.", "language": "English"}],
       "performance_intent": "Recognition without accusation; the smallest possible change around the eyes.",
       "camera": {
         "shot_size": "close-up over Eli's shoulder",

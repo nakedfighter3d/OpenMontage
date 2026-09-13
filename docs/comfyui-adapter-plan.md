@@ -257,9 +257,18 @@ output_node:          string    # required for custom workflows
 workflow_name:        string    # optional custom workflow provenance label
 workflow_model:       string    # optional custom model/provenance label
 workflow_model_stack: []        # optional custom dependency provenance
+workflow_input_bindings: {}     # semantic name -> existing node_id/input_name
+workflow_inputs: {}             # values patched only through those bindings
 timeout_seconds:      integer   # optional, default 3600 (see below)
 resume_prompt_id:     string    # optional, resume a timed-out job without resubmitting
 ```
+
+For premade custom workflows, `workflow_input_bindings` is the strict boundary
+between OpenMontage and the graph. The adapter patches only declared, already-existing
+node inputs and rejects missing nodes or input names before submission. It otherwise
+treats the workflow as opaque and downloads media only from `output_node`. Narrative
+Movie Production uses this path exclusively; it does not inspect or select a model or
+external service that may exist inside the workflow.
 
 **execute() flow (i2v):**
 1. Upload reference image via `client.upload_image()`

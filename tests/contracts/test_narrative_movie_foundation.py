@@ -43,6 +43,9 @@ def test_narrative_pipeline_stage_separation():
     assert stages.index("continuity") < stages.index("assets")
     assert stages.index("prompt_compile") < stages.index("assets")
     assert stages.index("take_qa") < stages.index("edit")
+    assets = next(stage for stage in manifest["stages"] if stage["name"] == "assets")
+    assert assets["required_tools"] == ["comfyui_video"]
+    assert "video_selector" not in assets["tools_available"]
 
 
 def test_dialogue_scene_dry_run_bundle_is_valid():

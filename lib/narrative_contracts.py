@@ -88,6 +88,11 @@ def validate_planning_bundle(
             set(shot["subjects"]) <= character_ids,
             f"shot {shot['id']} references an unknown character",
         )
+        for line in shot.get("dialogue", []):
+            _require(
+                line["speaker_id"] in character_ids,
+                f"shot {shot['id']} dialogue references an unknown speaker",
+            )
 
     expected_pairs = list(zip(shot_ids, shot_ids[1:]))
     actual_pairs = [
@@ -149,4 +154,3 @@ def validate_take_qa(
             takes[take_id]["verdict"] != "reject",
             f"selected take {take_id} is marked reject",
         )
-
