@@ -40,6 +40,7 @@ Pay particular attention to the intentional extension seams:
 - `skills/pipelines/narrative-movie/`
 - the six narrative schemas in `schemas/artifacts/`
 - `lib/narrative_contracts.py`
+- `scripts/install_screenwriting_skills.py`
 - narrative entries in `lib/checkpoint.py` and `schemas/artifacts/__init__.py`
 
 Do not rebase or force-push `main`. Keep external knowledge repositories separate;

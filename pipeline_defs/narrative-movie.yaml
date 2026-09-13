@@ -87,6 +87,7 @@ stages:
       - The artifact answers what happens and why without prescribing provider prompts
     success_criteria:
       - Schema-valid scene_intent
+      - Pinned dramaturgy dependency passed its local integrity check
       - Every beat changes action, information, relationship, or value
 
   - name: scene_design
@@ -226,4 +227,3 @@ stages:
       - Metadata and poster frame reflect the finished film
     success_criteria:
       - Schema-valid publish_log
-

@@ -65,6 +65,15 @@ internal/
 # Agent skills lock (local install tracking)
 skills-lock.json
 
+# Optional screenwriting dependency (installed locally from its pinned source;
+# deliberately not vendored because upstream grants personal-study use only)
+.agents/skills/sw-workflow/
+.agents/skills/sw-premise-theme/
+.agents/skills/sw-story-structure/
+.agents/skills/sw-character-conflict/
+.agents/skills/sw-scene-craft/
+.agents/skills/sw-dialogue/
+
 # Generated images (logo drafts — final logo lives in assets/)
 logo_*.png
 generated_image.png

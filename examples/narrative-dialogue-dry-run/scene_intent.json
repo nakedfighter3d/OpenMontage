@@ -99,9 +99,18 @@
     "The ticket envelope remains sealed",
     "Neither character leaves the booth during the scene"
   ],
-  "skill_provenance": [],
+  "skill_provenance": [
+    "sw-workflow",
+    "sw-premise-theme",
+    "sw-character-conflict",
+    "sw-scene-craft",
+    "sw-dialogue"
+  ],
   "metadata": {
     "example": true,
-    "dramaturgy_dependency": "pending screenwriting-skills-en-optimized content"
+    "dramaturgy_dependency": "nakedfighter3d/screenwriting-skills-en-optimized",
+    "dramaturgy_revision": "0c641f19a9d4e97d4438ff763d89c35772a2dce6",
+    "workflow_mode": "subordinate",
+    "story_structure_skill_omitted": "Single-scene dry run does not require feature or sequence restructuring"
   }
 }

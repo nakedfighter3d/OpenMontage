@@ -113,14 +113,26 @@ complete planning chain to be reviewed with no paid API call.
 
 ### Screenwriting skills
 
-`nakedfighter3d/screenwriting-skills-en-optimized` currently contains only its
-initial bootstrap/README, so runtime installation is intentionally deferred. Its
-upstream source has useful English skill history. When the optimized repository
-contains validated Agent Skills, install it independently and expose only the stage
-allowlist in `skills/pipelines/narrative-movie/external-skills.yaml`:
-`sw-workflow`, `sw-premise-theme`, `sw-character-conflict`, `sw-scene-craft`, and
-`sw-dialogue`. The dramaturgy director consumes those skills and emits
-`scene_intent`; no theory is copied into OpenMontage prompts.
+`nakedfighter3d/screenwriting-skills-en-optimized` is available and validated at
+commit `0c641f19a9d4e97d4438ff763d89c35772a2dce6`. OpenMontage pins that revision and
+installs only `sw-workflow`, `sw-premise-theme`, `sw-story-structure`,
+`sw-character-conflict`, `sw-scene-craft`, and `sw-dialogue` into the local
+`.agents/skills/` directory. `sw-workflow` runs in subordinate mode and the
+dramaturgy director maps its selected outputs into `scene_intent`; no theory is
+copied into OpenMontage prompts.
+
+The installed directories and `skills-lock.json` remain untracked. This is a
+deliberate licensing boundary: the upstream-derived package preserves the notice
+“For personal study use” and does not claim a broader redistribution grant. Run
+`scripts/install_screenwriting_skills.py --acknowledge-study-use` outside a
+production run, then use `--check` before the dramaturgy stage. The lock records the
+source, exact revision, selected skills, license notice, and content digests.
+
+To update the dramaturgy package, validate the new revision in its own repository
+first. Then change the pinned revision in both `external-skills.yaml` and the
+installer, reinstall the selective subset with `--force`, inspect the six skill
+diffs, and rerun the Narrative Movie contract suite. Never track the installed
+copies or `skills-lock.json` in OpenMontage.
 
 ### Generative media skills
 
@@ -180,7 +192,6 @@ It intentionally records zero generation calls and zero cost.
 
 ## Intentionally deferred
 
-- Installation of the unfinished optimized screenwriting repository.
 - Paid video generation and automated regeneration loops.
 - Vision-model take scoring beyond the take-QA interface and existing analysis tools.
 - Production Prompt Compiler implementations for each provider/model version.
@@ -196,7 +207,7 @@ composition engines remain unchanged. Keep `calesthio/OpenMontage` as `upstream`
 follow `docs/UPSTREAM_SYNC.md` for updates.
 
 The next milestone should turn the dry run into a controlled one-shot sample loop:
-finish and tag the optimized dramaturgy skills, implement one versioned Seedance 2.5
-compiler plus the stronger H3 compiler, generate one low-cost take for one approved
-shot, run frame/vision QA, and prove a rejected take can produce a targeted compiler
-revision without mutating the provider-independent shot intent.
+implement one versioned Seedance 2.5 compiler plus the stronger H3 compiler,
+generate one low-cost take for one approved shot, run frame/vision QA, and prove a
+rejected take can produce a targeted compiler revision without mutating the
+provider-independent shot intent.
