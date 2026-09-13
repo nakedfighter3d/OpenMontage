@@ -225,6 +225,15 @@ Stage director skills teach the agent HOW to execute each pipeline stage. Each s
 | Compose Director | `pipelines/cinematic/compose-director.md` | `compose` | Grade and mix finishing, frame-treatment judgment |
 | Publish Director | `pipelines/cinematic/publish-director.md` | `publish` | Hero vs teaser packaging, poster-frame concepts |
 
+### Narrative Movie Pipeline (`pipelines/narrative-movie/`) — v0.1 beta
+
+This profile keeps dramatic intent, coverage, continuity validation, provider prompt
+compilation, generated-take QA, and picture editing as separate responsibilities.
+Its dependency allowlist is in `pipelines/narrative-movie/external-skills.yaml`; load
+only the external craft skill needed by the active stage.
+
+See `docs/NARRATIVE_MOVIE_ARCHITECTURE.md` for the stage and artifact contracts.
+
 ### Animation Pipeline (`pipelines/animation/`) — v2.0
 
 | Skill | File | Stage | Key Capabilities |

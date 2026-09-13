@@ -369,6 +369,7 @@ Each pipeline is a complete production workflow, from idea to finished video.
 | **Animation** | Motion graphics, kinetic typography, animated sequences | Social media, product demos, abstract concepts |
 | **Avatar Spokesperson** | Avatar-driven presenter videos | Corporate comms, training, announcements |
 | **Cinematic** | Trailer, teaser, and mood-driven edits | Brand films, teasers, promotional content |
+| **Narrative Movie (beta)** | Dramatic scenes planned as editable coverage | Dialogue scenes, short films, action sequences |
 | **Clip Factory** | Batch of ranked short-form clips from one long source | Repurposing long content for social media |
 | **Documentary Montage** | Thematic montage cut from a CLIP-indexed corpus of free stock footage and open archives (Pexels, Archive.org, NASA, Wikimedia, Unsplash) | Video essays, mood pieces, retrieval-first B-roll edits, real-footage videos without paid generation APIs |
 | **Hybrid** | Source footage + AI-generated support visuals | Enhancing existing footage with graphics |
@@ -377,13 +378,17 @@ Each pipeline is a complete production workflow, from idea to finished video.
 | **Screen Demo** | Polished software screen recordings and walkthroughs | Product demos, tutorials, documentation |
 | **Talking Head** | Footage-led speaker videos | Presentations, vlogs, interviews |
 
-Every pipeline follows the same structured flow:
+Most pipelines follow the same structured flow:
 
 ```
 research -> proposal -> script -> scene_plan -> assets -> edit -> compose
 ```
 
 Each stage has a dedicated **director skill** — a markdown instruction file that teaches the agent exactly how to execute that stage. The agent reads the skill, uses the tools, self-reviews, checkpoints state, and asks for human approval at creative decision points.
+
+The beta Narrative Movie pipeline adds explicit dramaturgy, coverage, continuity,
+provider prompt compilation, and generated-take QA stages. See
+[Narrative Movie Architecture](docs/NARRATIVE_MOVIE_ARCHITECTURE.md).
 
 > **Web research is a first-class stage.** Before writing a single word of script, the agent searches YouTube, Reddit, Hacker News, news sites, and academic sources. It gathers data points, audience questions, trending angles, and visual references — then cites everything in a structured research brief. Your videos are grounded in real, current information, not hallucinated facts.
 
