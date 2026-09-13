@@ -15,7 +15,7 @@ enhancement visibility with naturalness.
 | `audio_enhance` | Loudness normalization, noise reduction, EQ | `clean_speech` |
 | `code_snippet` | Render code as styled overlay image | `monokai` theme |
 | `diagram_gen` | Generate box/flow diagrams as overlay images | `dark` theme |
-| `image_selector` | AI-generated illustrations (requires API key) | — |
+| `image_selector` | AI-generated illustrations (Codex-native default needs no API key) | — |
 
 ## Enhancement Chain
 

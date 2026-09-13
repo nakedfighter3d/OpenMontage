@@ -318,7 +318,7 @@ class ImageSelector(BaseTool):
                 )
 
         result = tool.execute(adapted)
-        if result.success:
+        if result.success or result.data.get("status") == "agent_action_required":
             result.data.setdefault("selected_tool", tool.name)
             result.data["selected_provider"] = tool.provider
             result.data["selection_reason"] = score.explain() if score else f"Selected {tool.provider} ({tool.name})"
@@ -341,6 +341,9 @@ class ImageSelector(BaseTool):
         from lib.scoring import rank_providers
 
         preferred = inputs.get("preferred_provider", "auto")
+        if preferred == "auto":
+            from lib.config_model import OpenMontageConfig
+            preferred = OpenMontageConfig.load().generation.image.preferred_provider
         allowed = set(inputs.get("allowed_providers") or [])
         if allowed:
             candidates = [tool for tool in candidates if tool.provider in allowed]

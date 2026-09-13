@@ -62,6 +62,27 @@ class PathsConfig(BaseModel):
     output_dir: str = "output"
 
 
+class ImageGenerationConfig(BaseModel):
+    """Defaults used when the caller does not lock an image provider."""
+
+    preferred_provider: str = "codex"
+
+
+class VideoGenerationConfig(BaseModel):
+    """Defaults used when the caller does not lock a video provider/profile."""
+
+    preferred_provider: str = "comfyui"
+    preferred_operation: str = "image_to_video"
+    image_to_video_workflow: str = "OpenMontage_WAN3_fl2va"
+    reference_to_video_workflow: str = "OpenMontage_WAN3_ref2va"
+    text_to_video_workflow: str = "OpenMontage_MiniMaxH3_fl2va"
+
+
+class GenerationConfig(BaseModel):
+    image: ImageGenerationConfig = Field(default_factory=ImageGenerationConfig)
+    video: VideoGenerationConfig = Field(default_factory=VideoGenerationConfig)
+
+
 class OpenMontageConfig(BaseModel):
     """Top-level runtime configuration."""
 
@@ -70,6 +91,7 @@ class OpenMontageConfig(BaseModel):
     checkpoint: CheckpointConfig = Field(default_factory=CheckpointConfig)
     output: OutputConfig = Field(default_factory=OutputConfig)
     paths: PathsConfig = Field(default_factory=PathsConfig)
+    generation: GenerationConfig = Field(default_factory=GenerationConfig)
 
     @classmethod
     def load(cls, config_path: Optional[Path] = None) -> "OpenMontageConfig":

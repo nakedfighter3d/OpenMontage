@@ -11,6 +11,7 @@ import json
 import time
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import requests
 
@@ -33,6 +34,14 @@ from tools._comfyui.metadata import (
     missing_models_payload,
     model_stack,
     workflow_hash,
+)
+from tools._comfyui.video_profiles import (
+    PROFILES,
+    build_profile_workflow,
+    default_profile_for,
+    get_profile,
+    profile_path,
+    profile_ready,
 )
 
 _WORKFLOWS = Path(__file__).resolve().parent.parent / "_comfyui" / "workflows"
@@ -93,7 +102,7 @@ _RESOURCE_PROFILES = {
 
 class ComfyUIVideo(BaseTool):
     name = "comfyui_video"
-    version = "0.2.0"
+    version = "0.3.0"
     tier = ToolTier.GENERATE
     capability = "video_generation"
     provider = "comfyui"
@@ -105,7 +114,8 @@ class ComfyUIVideo(BaseTool):
     dependencies = []
     setup_offer = COMFYUI_SETUP_OFFER
     install_instructions = (
-        "Start a ComfyUI server and set COMFYUI_SERVER_URL "
+        "Start a ComfyUI server (the default local install auto-starts through "
+        "run_nvidia_gpu.bat) or set COMFYUI_SERVER_URL "
         "(default http://localhost:8188).\n"
         "Bundled local WAN requires WAN 2.2 models and LightX2V LoRAs. Local "
         "MiniMax H3 requires its official model stack and exported API workflow.\n"
@@ -123,10 +133,17 @@ class ComfyUIVideo(BaseTool):
         "ltx2",
     ]
 
-    capabilities = ["text_to_video", "image_to_video"]
+    capabilities = ["text_to_video", "image_to_video", "reference_to_video"]
     supports = {
         "seed": True,
         "reference_image": True,
+        "first_last_frame": True,
+        "reference_to_video": True,
+        "multiple_reference_images": True,
+        "reference_video": True,
+        "reference_audio": True,
+        "named_workflow_profiles": True,
+        "auto_start": True,
         "custom_workflow": True,
         "custom_output_node": True,
         "offline": True,
@@ -162,8 +179,18 @@ class ComfyUIVideo(BaseTool):
             },
             "operation": {
                 "type": "string",
-                "enum": ["text_to_video", "image_to_video", "custom_workflow"],
-                "default": "text_to_video",
+                "enum": [
+                    "text_to_video",
+                    "image_to_video",
+                    "reference_to_video",
+                    "custom_workflow",
+                ],
+                "default": "image_to_video",
+            },
+            "workflow_profile": {
+                "type": "string",
+                "enum": list(PROFILES),
+                "description": "Named user workflow. Defaults by operation from config.yaml.",
             },
             "model_family": {
                 "type": "string",
@@ -185,6 +212,19 @@ class ComfyUIVideo(BaseTool):
                 "type": "string",
                 "description": "Local path to reference image (for image_to_video)",
             },
+            "first_image_path": {"type": "string"},
+            "last_image_path": {"type": "string"},
+            "last_image_url": {"type": "string"},
+            "reference_image_paths": {"type": "array", "items": {"type": "string"}},
+            "reference_image_urls": {"type": "array", "items": {"type": "string"}},
+            "reference_video_path": {"type": "string"},
+            "reference_video_url": {"type": "string"},
+            "reference_video_paths": {"type": "array", "items": {"type": "string"}},
+            "reference_video_urls": {"type": "array", "items": {"type": "string"}},
+            "reference_audio_path": {"type": "string"},
+            "reference_audio_url": {"type": "string"},
+            "reference_audio_paths": {"type": "array", "items": {"type": "string"}},
+            "reference_audio_urls": {"type": "array", "items": {"type": "string"}},
             "reference_image_url": {
                 "type": "string",
                 "description": "URL of reference image (for image_to_video, downloaded first)",
@@ -287,6 +327,11 @@ class ComfyUIVideo(BaseTool):
                     "resume_prompt_id to keep waiting without resubmitting."
                 ),
             },
+            "startup_timeout_seconds": {
+                "type": "integer",
+                "default": 120,
+                "description": "Seconds to wait after auto-starting the default local ComfyUI server.",
+            },
             "resume_prompt_id": {
                 "type": "string",
                 "description": (
@@ -341,7 +386,7 @@ class ComfyUIVideo(BaseTool):
             print(f"[comfyui_video] step {value}/{max_value}")
 
     def get_status(self) -> ToolStatus:
-        if not self._client.is_available():
+        if not self._client.is_available() and not self._client.can_auto_start():
             return ToolStatus.UNAVAILABLE
         statuses = self.operation_statuses()
         if any(status == "available" for status in statuses.values()):
@@ -352,21 +397,23 @@ class ComfyUIVideo(BaseTool):
 
     def operation_statuses(self) -> dict[str, str]:
         """Return per-operation readiness for selector routing and preflight."""
+        profile_statuses = {
+            operation: profile_ready(self._client, default_profile_for(operation))
+            for operation in ("text_to_video", "image_to_video", "reference_to_video")
+        }
         if not self._client.is_available():
-            return {
-                "text_to_video": "unavailable",
-                "image_to_video": "unavailable",
-            }
+            return {key: "available" if ready else "unavailable" for key, ready in profile_statuses.items()}
 
         _, missing_t2v = self._client.check_models(_REQUIRED_MODELS_T2V)
         _, missing_i2v = self._client.check_models(_REQUIRED_MODELS_I2V)
         return {
-            "text_to_video": "available" if not missing_t2v else "degraded",
-            "image_to_video": "available" if not missing_i2v else "degraded",
+            "text_to_video": "available" if profile_statuses["text_to_video"] or not missing_t2v else "degraded",
+            "image_to_video": "available" if profile_statuses["image_to_video"] or not missing_i2v else "degraded",
+            "reference_to_video": "available" if profile_statuses["reference_to_video"] else "degraded",
         }
 
     def is_operation_available(self, operation: str) -> bool:
-        if operation not in {"text_to_video", "image_to_video"}:
+        if operation not in {"text_to_video", "image_to_video", "reference_to_video"}:
             return False
         return self.operation_statuses().get(operation) == "available"
 
@@ -378,6 +425,18 @@ class ComfyUIVideo(BaseTool):
         info["bundled_model_stacks"] = {
             "text_to_video": BUNDLED_MODEL_STACKS["wan22-t2v-4step"],
             "image_to_video": BUNDLED_MODEL_STACKS["wan22-i2v-4step"],
+        }
+        info["workflow_profiles"] = {
+            name: {
+                "operations": list(profile.operations),
+                "model": profile.model,
+                "hosted": profile.hosted,
+                "path": str(profile_path(profile)),
+                "duration_seconds": [profile.min_duration, profile.max_duration],
+                "resolution": profile.resolution,
+                "aspect_ratio": profile.aspect_ratio,
+            }
+            for name, profile in PROFILES.items()
         }
         info["resource_profile_note"] = (
             "The top-level resource_profile is a ComfyUI provider floor, not a "
@@ -428,6 +487,11 @@ class ComfyUIVideo(BaseTool):
         return 0.0
 
     def estimate_runtime(self, inputs: dict[str, Any]) -> float:
+        profile_name = self._selected_profile_name(inputs)
+        if profile_name == "OpenMontage_MiniMaxH3_fl2va":
+            return 600.0
+        if profile_name:
+            return 600.0
         operation = inputs.get("operation", "text_to_video")
         if operation == "image_to_video":
             return 210.0  # ~3.5 min
@@ -438,12 +502,14 @@ class ComfyUIVideo(BaseTool):
             inputs.get("workflow_json") or inputs.get("workflow_path")
         )
         model_family = str(inputs.get("model_family", "wan2.2"))
+        operation = str(inputs.get("operation", "image_to_video"))
+        profile_name = self._selected_profile_name(inputs)
         partner_nodes = {
             "gemini_omni_flash": "GeminiVideoOmni",
             "seedance_2.5": "ByteDance2TextToVideoNode",
             "minimax_h3_api": "MinimaxHailuo03TextToVideoNode",
         }
-        if model_family == "minimax_h3_local" and not custom_workflow:
+        if model_family == "minimax_h3_local" and not custom_workflow and not profile_name:
             return ToolResult(
                 success=False,
                 data={
@@ -477,15 +543,15 @@ class ComfyUIVideo(BaseTool):
                 ),
             )
 
-        if not self._client.is_available():
+        if not self._client.ensure_available(
+            startup_timeout=int(inputs.get("startup_timeout_seconds", 120))
+        ):
             return ToolResult(
                 success=False,
                 error=self._client.unavailable_reason(),
             )
 
-        operation = inputs.get("operation", "text_to_video")
-
-        if not custom_workflow and model_family == "wan2.2":
+        if not custom_workflow and not profile_name and model_family == "wan2.2":
             required = (
                 _REQUIRED_MODELS_I2V
                 if operation == "image_to_video"
@@ -523,7 +589,14 @@ class ComfyUIVideo(BaseTool):
                 workflow = self._load_custom_workflow(inputs)
                 workflow = self._bind_custom_workflow_inputs(workflow, inputs)
                 output_node = str(inputs["output_node"])
+                profile = None
+            elif profile_name:
+                profile_inputs = self._materialize_profile_urls(inputs, output_path)
+                workflow, output_node, profile = build_profile_workflow(
+                    self._client, profile_name, profile_inputs, output_path, seed
+                )
             elif model_family in partner_nodes:
+                profile = None
                 node_class = partner_nodes[model_family]
                 if not self._client.has_node(node_class):
                     raise ComfyUIError(
@@ -534,13 +607,27 @@ class ComfyUIVideo(BaseTool):
                     inputs, seed, output_path, model_family
                 )
             elif operation == "image_to_video":
+                profile = None
                 workflow, output_node = self._build_i2v(inputs, seed, output_path)
             else:
+                profile = None
                 workflow, output_node = self._build_t2v(inputs, seed, output_path)
 
             provenance = self._workflow_provenance(
                 inputs, custom_workflow, output_node, operation, workflow, model_family
             )
+            if profile is not None:
+                provenance = {
+                    "source": "named_user_workflow_profile",
+                    "workflow_name": profile.name,
+                    "workflow_path": str(profile_path(profile)),
+                    "model": profile.model,
+                    "hosted": profile.hosted,
+                    "network_required": profile.hosted,
+                    "billing": "provider account configured in ComfyUI node" if profile.hosted else "local compute",
+                    "workflow_hash_sha256": workflow_hash(workflow),
+                    "output_node": output_node,
+                }
             paths = self._client.generate(
                 workflow,
                 output_node=output_node,
@@ -569,8 +656,11 @@ class ComfyUIVideo(BaseTool):
                 success=False, error=f"ComfyUI video generation failed: {exc}"
             )
 
-        model_name = self._model_name(inputs, custom_workflow)
-        partner_execution = model_family in partner_nodes and not custom_workflow
+        model_name = profile.model if profile is not None else self._model_name(inputs, custom_workflow)
+        partner_execution = (
+            profile.hosted if profile is not None
+            else model_family in partner_nodes and not custom_workflow
+        )
         result_data: dict[str, Any] = {
             "provider": "comfyui",
             "model": model_name,
@@ -582,7 +672,18 @@ class ComfyUIVideo(BaseTool):
             "hosted": partner_execution,
             "network_required": partner_execution,
         }
-        if partner_execution:
+        if profile is not None:
+            result_data.update(
+                {
+                    "duration_seconds": int(str(inputs.get("duration", profile.default_duration)).rstrip("s")),
+                    "fps": 24,
+                    "aspect_ratio": inputs.get("aspect_ratio", profile.aspect_ratio),
+                    "resolution": inputs.get("resolution", profile.resolution),
+                    "workflow_profile": profile.name,
+                    "billing": "provider account configured in ComfyUI node" if profile.hosted else "local compute",
+                }
+            )
+        elif partner_execution:
             result_data.update(
                 {
                     "duration_seconds": int(inputs.get("duration", 5)),
@@ -614,6 +715,53 @@ class ComfyUIVideo(BaseTool):
             seed=seed,
             model=model_name,
         )
+
+    @staticmethod
+    def _selected_profile_name(inputs: dict[str, Any]) -> str | None:
+        explicit = inputs.get("workflow_profile")
+        if explicit:
+            return str(explicit)
+        # Supplying a legacy model_family intentionally opts into the older
+        # bundled/partner-node paths. Otherwise named profiles are the default.
+        if "model_family" in inputs:
+            return None
+        return default_profile_for(str(inputs.get("operation", "image_to_video")))
+
+    @staticmethod
+    def _materialize_profile_urls(
+        inputs: dict[str, Any], output_path: Path
+    ) -> dict[str, Any]:
+        """Download URL references so named ComfyUI profiles can upload them locally."""
+        prepared = dict(inputs)
+
+        def download(url: str, label: str) -> str:
+            suffix = Path(urlparse(url).path).suffix or ".bin"
+            target = output_path.with_name(f"{output_path.stem}.{label}{suffix}")
+            response = requests.get(url, timeout=120)
+            response.raise_for_status()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(response.content)
+            return str(target)
+
+        singles = {
+            "reference_image_url": "reference_image_path",
+            "last_image_url": "last_image_path",
+            "reference_video_url": "reference_video_path",
+            "reference_audio_url": "reference_audio_path",
+        }
+        for url_key, path_key in singles.items():
+            if prepared.get(url_key) and not prepared.get(path_key):
+                prepared[path_key] = download(str(prepared[url_key]), url_key)
+
+        for kind in ("image", "video", "audio"):
+            url_key = f"reference_{kind}_urls"
+            path_key = f"reference_{kind}_paths"
+            paths = list(prepared.get(path_key) or [])
+            for index, url in enumerate(prepared.get(url_key) or []):
+                paths.append(download(str(url), f"{kind}_{index}"))
+            if paths:
+                prepared[path_key] = paths
+        return prepared
 
     # ------------------------------------------------------------------
     # Workflow builders

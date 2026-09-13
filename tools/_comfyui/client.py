@@ -10,6 +10,7 @@ import copy
 import json
 import os
 import random
+import subprocess
 import time
 import uuid
 from pathlib import Path
@@ -63,6 +64,12 @@ class ComfyUIClient:
         # Scopes websocket execution events to this client (see wait_ws) and
         # is echoed back on /prompt so the server targets messages to us.
         self.client_id = str(uuid.uuid4())
+        self._models_cache: dict[str, list[str]] | None = None
+        self._node_types_cache: set[str] | None = None
+
+    DEFAULT_WINDOWS_LAUNCHER = Path(
+        r"C:\!AI\ComfyUI-Easy-Install\ComfyUI-Easy-Install\run_nvidia_gpu.bat"
+    )
 
     def _capability_url(self) -> str | None:
         if self._capability_env_var:
@@ -103,6 +110,51 @@ class ComfyUIClient:
         except Exception:
             return False
 
+    def launcher_path(self) -> Path | None:
+        """Return the configured local launcher, if automatic startup is usable."""
+        configured = os.environ.get("COMFYUI_LAUNCHER")
+        path = Path(configured) if configured else self.DEFAULT_WINDOWS_LAUNCHER
+        # Never auto-start a local process for a caller-configured remote/alternate URL.
+        if not self.is_default_url or self.server_url not in {
+            "http://localhost:8188",
+            "http://127.0.0.1:8188",
+        }:
+            return None
+        disabled = os.environ.get("COMFYUI_AUTO_START", "1").lower() in {
+            "0", "false", "no", "off"
+        }
+        return None if disabled or not path.is_file() else path
+
+    def can_auto_start(self) -> bool:
+        return self.launcher_path() is not None
+
+    def ensure_available(self, *, startup_timeout: int = 120) -> bool:
+        """Reach the server, starting the configured local launcher when needed."""
+        if self.is_available():
+            return True
+        launcher = self.launcher_path()
+        if launcher is None:
+            return False
+        flags = 0
+        if os.name == "nt":
+            flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(
+                subprocess, "DETACHED_PROCESS", 0
+            )
+        subprocess.Popen(
+            ["cmd.exe", "/c", str(launcher)],
+            cwd=str(launcher.parent),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=flags,
+        )
+        deadline = time.monotonic() + startup_timeout
+        while time.monotonic() < deadline:
+            if self.is_available():
+                return True
+            time.sleep(2)
+        return False
+
     # ------------------------------------------------------------------
     # Model discovery
     # ------------------------------------------------------------------
@@ -120,6 +172,8 @@ class ComfyUIClient:
                 "loras": ["my_lora.safetensors", ...],
             }
         """
+        if self._models_cache is not None:
+            return {key: list(value) for key, value in self._models_cache.items()}
         node_to_key = {
             "CheckpointLoaderSimple": ("ckpt_name", "checkpoints"),
             "UNETLoader": ("unet_name", "diffusion_models"),
@@ -145,6 +199,7 @@ class ComfyUIClient:
                     result[group] = options
             except Exception:
                 result[group] = []
+        self._models_cache = {key: list(value) for key, value in result.items()}
         return result
 
     def check_models(self, required: list[str]) -> tuple[list[str], list[str]]:
@@ -162,12 +217,15 @@ class ComfyUIClient:
 
     def has_node(self, node_class: str) -> bool:
         """Return whether the connected server exposes a node class."""
+        if self._node_types_cache is not None:
+            return node_class in self._node_types_cache
         try:
             response = requests.get(
-                f"{self.server_url}/object_info/{node_class}", timeout=10
+                f"{self.server_url}/object_info", timeout=20
             )
             response.raise_for_status()
-            return node_class in response.json()
+            self._node_types_cache = set(response.json())
+            return node_class in self._node_types_cache
         except Exception:
             return False
 
@@ -400,6 +458,21 @@ class ComfyUIClient:
                 f"{self.server_url}/upload/image",
                 files={"image": (name, f, "image/png")},
                 timeout=30,
+            )
+        resp.raise_for_status()
+        return resp.json()["name"]
+
+    def upload_file(self, local_path: Path, name: str | None = None) -> str:
+        """Upload any ComfyUI input media file (image, video, or audio)."""
+        local_path = Path(local_path)
+        if not local_path.is_file():
+            raise ComfyUIError(f"Input media does not exist: {local_path}")
+        with open(local_path, "rb") as f:
+            resp = requests.post(
+                f"{self.server_url}/upload/image",
+                files={"image": (name or local_path.name, f, "application/octet-stream")},
+                data={"type": "input"},
+                timeout=120,
             )
         resp.raise_for_status()
         return resp.json()["name"]

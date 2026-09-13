@@ -1217,6 +1217,17 @@ the ComfyUI machine. MiniMax H3 is available as an official open-weight local
 workflow; pass the official workflow exported in API format using
 `workflow_json` or `workflow_path`, plus its `output_node`.
 
+This installation also exposes three named `workflow_profile` values:
+`OpenMontage_WAN3_fl2va` (default image-to-video),
+`OpenMontage_WAN3_ref2va` (mixed image/video/audio references), and
+`OpenMontage_MiniMaxH3_fl2va` (local text/first/last-frame generation). The
+default server can be auto-started with the configured `COMFYUI_LAUNCHER`.
+`COMFYUI_WORKFLOW_DIR` relocates the saved profile directory.
+
+The current WAN3 profiles use `VeniceWAN...` nodes and are therefore marked
+hosted/provider-backed in provenance. A local ComfyUI graph is not necessarily
+an offline graph; node execution mode is the source of truth.
+
 The MiniMax H3 local stack includes the pruned INT8 diffusion model, Qwen3-VL
 text encoder, video VAE, and audio VAE. OpenMontage exposes the official
 download URLs and destination folders in tool metadata rather than silently
@@ -1238,6 +1249,18 @@ from Comfy credits (211 credits = $1); actual metered usage is authoritative.
 Official references: [Partner Node overview](https://docs.comfy.org/tutorials/partner-nodes/overview),
 [pricing](https://docs.comfy.org/tutorials/partner-nodes/pricing), and
 [MiniMax H3 local tutorial](https://docs.comfy.org/tutorials/video/minimax/minimax-h3).
+
+---
+
+### Codex-native Image Generation
+
+**Tool:** `codex_image` (default route through `image_selector`)
+
+This agent-mediated provider uses Codex's built-in image generator and requires
+no image API key. Its prepare phase returns `agent_action_required`; the Codex
+agent generates and reviews the bitmap, copies it into the project, and calls
+the register phase before the asset is considered complete. Python-only,
+unattended runs must choose a different provider explicitly.
 
 ---
 

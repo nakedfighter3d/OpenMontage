@@ -13,6 +13,11 @@ COMFYUI_SETUP_OFFER: dict[str, Any] = {
     "env_var": "COMFYUI_SERVER_URL",
     "default_url": "http://localhost:8188",
     "health_check": "GET /system_stats",
+    "auto_start": {
+        "default_launcher": r"C:\!AI\ComfyUI-Easy-Install\ComfyUI-Easy-Install\run_nvidia_gpu.bat",
+        "launcher_env_var": "COMFYUI_LAUNCHER",
+        "disable_env_var": "COMFYUI_AUTO_START=0",
+    },
     "what_it_unlocks": [
         "free local image generation through ComfyUI workflows",
         "free local video generation through ComfyUI workflows",

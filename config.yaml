@@ -25,6 +25,18 @@ output:
   default_fps: 30
   default_crf: 23
 
+# Generation is local/agent-native by default. Explicit per-call provider choices
+# still win over these preferences.
+generation:
+  image:
+    preferred_provider: codex
+  video:
+    preferred_provider: comfyui
+    preferred_operation: image_to_video
+    image_to_video_workflow: OpenMontage_WAN3_fl2va
+    reference_to_video_workflow: OpenMontage_WAN3_ref2va
+    text_to_video_workflow: OpenMontage_MiniMaxH3_fl2va
+
 paths:
   pipeline_dir: pipeline
   library_dir: library

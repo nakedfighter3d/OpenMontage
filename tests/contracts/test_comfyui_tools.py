@@ -919,7 +919,11 @@ class TestCustomWorkflowContract:
             ["wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors"],
         )
 
-        result = tool.execute({"prompt": "test", "operation": "text_to_video"})
+        result = tool.execute({
+            "prompt": "test",
+            "operation": "text_to_video",
+            "model_family": "wan2.2",  # explicitly exercise the legacy bundled path
+        })
 
         assert result.success is False
         assert result.data["operation"] == "text_to_video"
@@ -1177,10 +1181,11 @@ class TestComfyUISetupOffer:
 
 class TestVideoOperationReadiness:
 
-    def test_video_tool_reports_partial_operation_readiness(self):
+    def test_video_tool_reports_partial_operation_readiness(self, monkeypatch, tmp_path):
         from tools.video.comfyui_video import _REQUIRED_MODELS_I2V, _REQUIRED_MODELS_T2V
 
         tool = ComfyUIVideo()
+        monkeypatch.setenv("COMFYUI_WORKFLOW_DIR", str(tmp_path))
         tool._client.is_available = lambda: True
 
         def fake_check_models(required):
@@ -1198,6 +1203,7 @@ class TestVideoOperationReadiness:
         assert tool.operation_statuses() == {
             "text_to_video": "available",
             "image_to_video": "degraded",
+            "reference_to_video": "degraded",
         }
 
     def test_video_selector_filters_operation_unready_tools(self):

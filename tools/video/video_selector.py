@@ -14,7 +14,7 @@ from tools.base_tool import BaseTool, ToolResult, ToolRuntime, ToolStability, To
 
 class VideoSelector(BaseTool):
     name = "video_selector"
-    version = "0.3.1"
+    version = "0.4.0"
     tier = ToolTier.GENERATE
     capability = "video_generation"
     provider = "selector"
@@ -71,13 +71,13 @@ class VideoSelector(BaseTool):
             "operation": {
                 "type": "string",
                 "enum": ["text_to_video", "image_to_video", "reference_to_video", "video_edit", "rank"],
-                "default": "text_to_video",
+                "default": "image_to_video",
             },
             "target_operation": {
                 "type": "string",
                 "enum": ["text_to_video", "image_to_video", "reference_to_video", "video_edit"],
                 "description": "Operation to score when operation='rank'.",
-                "default": "text_to_video",
+                "default": "image_to_video",
             },
             "aspect_ratio": {
                 "type": "string",
@@ -137,6 +137,11 @@ class VideoSelector(BaseTool):
             },
             "last_image_url": {"type": "string", "description": "Optional final frame for first/last-frame generation."},
             "last_image_path": {"type": "string", "description": "Optional local final frame."},
+            "first_image_path": {"type": "string", "description": "Alias for the first frame of an image-to-video workflow."},
+            "workflow_profile": {
+                "type": "string",
+                "description": "Named ComfyUI workflow profile; discovered from comfyui_video.",
+            },
             "video_url": {"type": "string", "description": "Source video URL for video editing."},
             "video_path": {"type": "string", "description": "Local source video for video editing."},
             "video_clips": {"type": "array", "items": {"type": "object"}},
@@ -292,6 +297,7 @@ class VideoSelector(BaseTool):
         return ToolStatus.UNAVAILABLE
 
     def estimate_cost(self, inputs: dict[str, object]) -> float:
+        inputs = self._with_generation_defaults(inputs)
         candidates = self._filter_candidates(inputs, self._providers())
         if not candidates:
             return 0.0
@@ -299,6 +305,7 @@ class VideoSelector(BaseTool):
         return tool.estimate_cost(inputs) if tool else 0.0
 
     def estimate_runtime(self, inputs: dict[str, object]) -> float:
+        inputs = self._with_generation_defaults(inputs)
         candidates = self._providers()
         if not candidates:
             return 0.0
@@ -308,6 +315,7 @@ class VideoSelector(BaseTool):
     def execute(self, inputs: dict[str, object]) -> ToolResult:
         from lib.scoring import rank_providers
 
+        inputs = self._with_generation_defaults(inputs)
         candidates = self._providers()
 
         # Rank mode — return scored provider rankings without generating
@@ -379,6 +387,11 @@ class VideoSelector(BaseTool):
         from lib.scoring import rank_providers, ProviderScore
 
         preferred = inputs.get("preferred_provider", "auto")
+        configured_default = False
+        if preferred == "auto":
+            from lib.config_model import OpenMontageConfig
+            preferred = OpenMontageConfig.load().generation.video.preferred_provider
+            configured_default = preferred != "auto"
         allowed = set(inputs.get("allowed_providers") or [])
         if allowed:
             candidates = [tool for tool in candidates if tool.provider in allowed]
@@ -428,7 +441,9 @@ class VideoSelector(BaseTool):
                 (s for s in rankings if s.provider == preferred and _tool_for(s) is not None),
                 None,
             )
-            if preferred_score is not None and preferred_score.weighted_score >= top_score - gap:
+            if preferred_score is not None and (
+                configured_default or preferred_score.weighted_score >= top_score - gap
+            ):
                 return _tool_for(preferred_score), preferred_score
 
         # Return the highest-scored selectable provider
@@ -448,6 +463,14 @@ class VideoSelector(BaseTool):
             capability=self.capability,
             operation=str(inputs.get("operation", "text_to_video")),
         )
+
+    @staticmethod
+    def _with_generation_defaults(inputs: dict[str, object]) -> dict[str, object]:
+        prepared = dict(inputs)
+        if not prepared.get("operation"):
+            from lib.config_model import OpenMontageConfig
+            prepared["operation"] = OpenMontageConfig.load().generation.video.preferred_operation
+        return prepared
 
     @staticmethod
     def _rank_inputs(inputs: dict[str, object]) -> dict[str, object]:

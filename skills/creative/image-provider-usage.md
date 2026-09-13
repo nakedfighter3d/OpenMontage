@@ -28,6 +28,7 @@
 | Tool | Purpose |
 |------|---------|
 | `image_selector` | Routes to the best available provider based on preference and availability |
+| `codex_image` | Default agent-mediated route: Codex built-in image generation, no image API key |
 
 ## Provider Selection by Scene Type
 
@@ -84,6 +85,11 @@ Use `generation_mode="edit"` when the task starts from an existing image and sho
 ## Using the Image Selector
 
 For most cases, use `image_selector` and let it route:
+
+The configured default is `codex_image`. Its first result may be
+`agent_action_required`: invoke Codex's built-in `image_gen`, copy the selected
+asset into the project, then register it through `codex_image`. This is not a cue
+to omit the image or silently choose an API provider.
 
 ```python
 # The selector finds the best available provider

@@ -10,6 +10,10 @@ Use this skill before calling `comfyui_image`, `comfyui_video`, or `comfyui_musi
 ## Server Contract
 
 - ComfyUI must be running before the tool can generate. The default server is `http://localhost:8188`; override it with `COMFYUI_SERVER_URL`.
+- On this OpenMontage installation, `comfyui_video` auto-starts the default local
+  server with `C:\!AI\ComfyUI-Easy-Install\ComfyUI-Easy-Install\run_nvidia_gpu.bat`
+  when needed. Override with `COMFYUI_LAUNCHER`, or disable with
+  `COMFYUI_AUTO_START=0`. Auto-start is never used for an explicitly configured URL.
 - Running separate ComfyUI instances per capability (different GPU, different model set)? `COMFYUI_IMAGE_SERVER_URL` / `COMFYUI_VIDEO_SERVER_URL` / `COMFYUI_MUSIC_SERVER_URL` each override `COMFYUI_SERVER_URL` for that one tool only. Optional -- a single-server setup needs none of these.
 - Health and hardware status come from `GET /system_stats`.
 - Jobs are submitted to `POST /prompt`, completed outputs are read from `GET /history/{prompt_id}`, and artifact bytes are downloaded with `GET /view`.
@@ -28,6 +32,17 @@ Use this skill before calling `comfyui_image`, `comfyui_video`, or `comfyui_musi
   stack reported by the tool.
 
 ## Choosing a Workflow
+
+OpenMontage has three named user profiles. Prefer
+`OpenMontage_WAN3_fl2va` for normal image-to-video, use
+`OpenMontage_WAN3_ref2va` only when mixed image/video/audio references are needed,
+and use `OpenMontage_MiniMaxH3_fl2va` for local MiniMax H3 text/first/last-frame
+generation. The defaults live under `generation.video` in `config.yaml`; set
+`COMFYUI_WORKFLOW_DIR` if the ComfyUI user workflow directory moves.
+
+The WAN3 profiles currently contain `VeniceWAN...` nodes. Treat those profiles as
+hosted/provider-backed in provenance even though they are submitted through local
+ComfyUI. The MiniMax H3 profile uses local weights.
 
 - Use bundled workflows when the requested operation matches and the local machine has the required models and VRAM.
 - Use a custom `workflow_json` or `workflow_path` when the user needs a community recipe, a lower-VRAM model, a different style family, or custom nodes.
