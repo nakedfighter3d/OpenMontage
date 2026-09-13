@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openmontage/artifacts/scene_intent",
+  "title": "Narrative Scene Intent",
+  "description": "Provider-independent dramatic contract describing what happens in one scene and why.",
+  "type": "object",
+  "required": ["version", "id", "title", "scene_purpose", "characters", "beats"],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "scene_purpose": { "type": "string", "minLength": 1 },
+    "premise_or_theme": { "type": "string" },
+    "setting": {
+      "type": "object",
+      "required": ["location", "time"],
+      "properties": {
+        "location": { "type": "string" },
+        "time": { "type": "string" },
+        "established_geography": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "characters": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "objective", "opposition", "stakes", "entry_emotion", "exit_emotion"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "objective": { "type": "string" },
+          "opposition": { "type": "string" },
+          "stakes": { "type": "string" },
+          "entry_emotion": { "type": "string" },
+          "exit_emotion": { "type": "string" },
+          "subtext": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "purpose", "action", "value_before", "value_after"],
+        "properties": {
+          "id": { "type": "string" },
+          "order": { "type": "integer", "minimum": 1 },
+          "purpose": { "type": "string" },
+          "action": { "type": "string" },
+          "value_before": { "type": "string" },
+          "value_after": { "type": "string" },
+          "required_information": { "type": "array", "items": { "type": "string" } },
+          "dialogue": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["speaker_id", "text"],
+              "properties": {
+                "speaker_id": { "type": "string" },
+                "text": { "type": "string" },
+                "performance_note": { "type": "string" },
+                "subtext": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "setup_payoff": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["setup", "payoff"],
+        "properties": {
+          "setup": { "type": "string" },
+          "payoff": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "skill_provenance": { "type": "array", "items": { "type": "string" } },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

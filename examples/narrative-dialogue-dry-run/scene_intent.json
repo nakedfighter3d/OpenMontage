@@ -1,0 +1,107 @@
+{
+  "version": "1.0",
+  "id": "scene-last-bus",
+  "title": "The Last Bus",
+  "scene_purpose": "Mara asks Eli to leave town with her; his hesitation reveals that he already chose to stay.",
+  "premise_or_theme": "A decision delayed is still a decision.",
+  "setting": {
+    "location": "A nearly empty roadside diner booth",
+    "time": "Night, minutes before closing",
+    "established_geography": [
+      "Mara sits on the window side of the booth",
+      "Eli sits opposite on the aisle side",
+      "The front door and bus-stop lights are behind Eli"
+    ]
+  },
+  "characters": [
+    {
+      "id": "mara",
+      "name": "Mara",
+      "objective": "Get Eli to board the last bus with her",
+      "opposition": "Eli refuses to state that he has chosen his father over her",
+      "stakes": "If he stays, their relationship ends without either of them naming it",
+      "entry_emotion": "controlled hope",
+      "exit_emotion": "quiet recognition",
+      "subtext": "She is asking whether she matters more than his fear of leaving"
+    },
+    {
+      "id": "eli",
+      "name": "Eli",
+      "objective": "Make Mara leave without forcing him to say no",
+      "opposition": "The bus ticket makes his passive choice visible",
+      "stakes": "Leaving betrays his dependent father; staying loses Mara",
+      "entry_emotion": "defensive calm",
+      "exit_emotion": "shame",
+      "subtext": "He wants her to absolve him by making the decision herself"
+    }
+  ],
+  "beats": [
+    {
+      "id": "beat-offer",
+      "order": 1,
+      "purpose": "Make the choice physically unavoidable",
+      "action": "Mara slides a bus ticket in a paper envelope halfway across the table",
+      "value_before": "The future remains hypothetical",
+      "value_after": "A concrete departure is possible",
+      "required_information": ["The bus leaves tonight", "There is a ticket for Eli"],
+      "dialogue": [
+        {
+          "speaker_id": "mara",
+          "text": "It leaves at eleven.",
+          "performance_note": "Matter-of-fact, as if discussing weather",
+          "subtext": "Please make me believe I did not wait for nothing"
+        }
+      ]
+    },
+    {
+      "id": "beat-evasion",
+      "order": 2,
+      "purpose": "Let Eli avoid the actual question",
+      "action": "Eli looks at the envelope but leaves it between them",
+      "value_before": "Mara can still read silence as uncertainty",
+      "value_after": "His refusal to touch the ticket begins to answer her",
+      "required_information": ["Eli has not packed"],
+      "dialogue": [
+        {
+          "speaker_id": "eli",
+          "text": "You should get there before the rain.",
+          "performance_note": "Gentle and practical; no eye contact until the last word",
+          "subtext": "I am not coming, and I want you to spare me from saying it"
+        }
+      ]
+    },
+    {
+      "id": "beat-recognition",
+      "order": 3,
+      "purpose": "Mara understands and ends the negotiation",
+      "action": "Mara withdraws her hand, leaving the envelope in the exact center of the table",
+      "value_before": "She is waiting for his choice",
+      "value_after": "She accepts that he has already made it",
+      "required_information": ["The envelope remains unopened"],
+      "dialogue": [
+        {
+          "speaker_id": "mara",
+          "text": "I know.",
+          "performance_note": "A small breath before the line; no accusation",
+          "subtext": "I finally understand that I am leaving alone"
+        }
+      ]
+    }
+  ],
+  "setup_payoff": [
+    {
+      "setup": "The sealed envelope is introduced as an offered future",
+      "payoff": "It remains unopened when the relationship ends"
+    }
+  ],
+  "constraints": [
+    "No melodramatic crying or raised voices",
+    "The ticket envelope remains sealed",
+    "Neither character leaves the booth during the scene"
+  ],
+  "skill_provenance": [],
+  "metadata": {
+    "example": true,
+    "dramaturgy_dependency": "pending screenwriting-skills-en-optimized content"
+  }
+}

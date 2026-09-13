@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openmontage/artifacts/shot_plan",
+  "title": "Provider-Independent Shot Plan",
+  "description": "Coverage, shot intent, sequential state, and edit-boundary plan created before provider prompt compilation.",
+  "type": "object",
+  "required": ["version", "id", "scene_intent_id", "continuity_bible_id", "coverage_strategy", "shots", "edit_boundaries"],
+  "$defs": {
+    "state": {
+      "type": "object",
+      "required": ["character_positions", "body_orientation", "eyelines", "movement_direction", "current_action", "prop_states", "emotional_state", "camera_side"],
+      "properties": {
+        "character_positions": { "type": "object", "additionalProperties": { "type": "string" } },
+        "body_orientation": { "type": "object", "additionalProperties": { "type": "string" } },
+        "eyelines": { "type": "object", "additionalProperties": { "type": "string" } },
+        "movement_direction": { "type": "object", "additionalProperties": { "type": "string" } },
+        "current_action": { "type": "string" },
+        "prop_states": { "type": "object", "additionalProperties": { "type": "string" } },
+        "emotional_state": { "type": "object", "additionalProperties": { "type": "string" } },
+        "camera_side": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "id": { "type": "string" },
+    "scene_intent_id": { "type": "string" },
+    "continuity_bible_id": { "type": "string" },
+    "coverage_strategy": { "type": "string" },
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "beat_ids", "narrative_purpose", "duration_seconds", "subjects", "blocking", "performance_intent", "camera", "screen_direction", "eyelines", "entrance_state", "exit_state", "edit_handles"],
+        "properties": {
+          "id": { "type": "string" },
+          "order": { "type": "integer", "minimum": 1 },
+          "beat_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "narrative_purpose": { "type": "string" },
+          "duration_seconds": { "type": "number", "exclusiveMinimum": 0 },
+          "subjects": { "type": "array", "items": { "type": "string" } },
+          "blocking": { "type": "string" },
+          "action": { "type": "string" },
+          "performance_intent": { "type": "string" },
+          "camera": {
+            "type": "object",
+            "required": ["shot_size", "position", "height", "angle", "movement", "field_of_view", "focus"],
+            "properties": {
+              "shot_size": { "type": "string" },
+              "position": { "type": "string" },
+              "height": { "type": "string" },
+              "angle": { "type": "string" },
+              "movement": { "type": "string" },
+              "field_of_view": { "type": "string" },
+              "focus": { "type": "string" },
+              "composition": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "screen_direction": { "type": "string" },
+          "eyelines": { "type": "object", "additionalProperties": { "type": "string" } },
+          "lighting_intent": { "type": "string" },
+          "entrance_state": { "$ref": "#/$defs/state" },
+          "exit_state": { "$ref": "#/$defs/state" },
+          "continuity_refs": { "type": "array", "items": { "type": "string" } },
+          "reference_assets": { "type": "array", "items": { "type": "string" } },
+          "edit_handles": {
+            "type": "object",
+            "required": ["head_seconds", "tail_seconds"],
+            "properties": {
+              "head_seconds": { "type": "number", "minimum": 0 },
+              "tail_seconds": { "type": "number", "minimum": 0 }
+            },
+            "additionalProperties": false
+          },
+          "tolerances": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edit_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "from_shot_id", "to_shot_id", "cut_type", "outgoing_action", "incoming_action", "movement_vector", "spatial_relationship", "screen_direction", "intended_cut_point", "match_on_action", "required_handles", "fallback"],
+        "properties": {
+          "id": { "type": "string" },
+          "from_shot_id": { "type": "string" },
+          "to_shot_id": { "type": "string" },
+          "cut_type": { "type": "string" },
+          "outgoing_action": { "type": "string" },
+          "incoming_action": { "type": "string" },
+          "movement_vector": { "type": "string" },
+          "spatial_relationship": { "type": "string" },
+          "screen_direction": { "type": "string" },
+          "visual_bridge": { "type": "string" },
+          "audio_bridge": { "type": "string" },
+          "intended_cut_point": { "type": "string" },
+          "match_on_action": { "type": "boolean" },
+          "required_handles": { "type": "string" },
+          "fallback": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

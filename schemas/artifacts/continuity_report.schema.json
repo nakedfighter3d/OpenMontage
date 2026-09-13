@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openmontage/artifacts/continuity_report",
+  "title": "Continuity and Pre-Edit Report",
+  "description": "Advisory assessment of coverage and editability before paid generation. Conventions may pass, warn, fail, or be intentionally excepted.",
+  "type": "object",
+  "required": ["version", "id", "shot_plan_id", "status", "findings", "coverage_assessment", "approved_for_generation"],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "id": { "type": "string" },
+    "shot_plan_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["pass", "pass_with_risks", "revise"] },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "outcome", "shot_ids", "reason", "risk", "intentional_exception", "repair_strategies"],
+        "properties": {
+          "rule": {
+            "type": "string",
+            "enum": ["180_degree", "eyeline", "screen_direction", "entrance_exit", "match_on_action", "action_overlap", "30_degree", "shot_size_change", "spatial_geography", "coverage", "insert_cutaway", "axis_crossing", "other"]
+          },
+          "outcome": { "type": "string", "enum": ["pass", "risk", "violation", "intentional_exception"] },
+          "boundary_id": { "type": ["string", "null"] },
+          "shot_ids": { "type": "array", "items": { "type": "string" } },
+          "reason": { "type": "string" },
+          "risk": { "type": "string" },
+          "intentional_exception": { "type": "boolean" },
+          "repair_strategies": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "coverage_assessment": {
+      "type": "object",
+      "required": ["orientation", "decisive_actions", "reactions", "fallbacks"],
+      "properties": {
+        "orientation": { "type": "string" },
+        "decisive_actions": { "type": "string" },
+        "reactions": { "type": "string" },
+        "fallbacks": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "approved_for_generation": { "type": "boolean" },
+    "reviewer_notes": { "type": "string" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

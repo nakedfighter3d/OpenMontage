@@ -37,6 +37,14 @@ CANONICAL_STAGE_ARTIFACTS = {
     "edit": "edit_decisions",
     "compose": "render_report",
     "publish": "publish_log",
+    # Narrative Movie Production extension stages. These remain instruction-driven;
+    # the mapping only makes their canonical structured handoffs fail closed.
+    "dramaturgy": "scene_intent",
+    "scene_design": "continuity_bible",
+    "coverage": "shot_plan",
+    "continuity": "continuity_report",
+    "prompt_compile": "prompt_package",
+    "take_qa": "take_qa_report",
 }
 
 # Additional artifacts that may be produced alongside canonical ones.
