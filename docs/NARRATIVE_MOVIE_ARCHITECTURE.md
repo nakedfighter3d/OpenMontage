@@ -13,7 +13,7 @@ production capabilities.
 OpenMontage is already an agent-first production framework. YAML pipeline manifests
 declare stages, tools, artifacts, review criteria, approvals, and budgets. Markdown
 director skills supply stage-specific judgment. JSON Schema artifacts and checkpoints
-form the persistent handoffs. Provider selectors, asset manifests, cost tracking,
+form the persistent handoffs. The ComfyUI adapter, asset manifests, provenance,
 Remotion, HyperFrames, and FFmpeg provide execution infrastructure.
 
 The production `cinematic` pipeline is optimized for trailers, teasers, and
@@ -26,10 +26,10 @@ therefore introduced as a separate beta profile that reuses the same framework.
 
 | Owner | Responsibility | Must not own |
 |---|---|---|
-| OpenMontage | Orchestration, manifests, stage state, providers, generation, assets, rendering, cost and approval gates | A duplicated encyclopedia of every filmmaking discipline |
-| `screenwriting-skills-en-optimized` | Premise, theme, objectives, conflict, scene purpose, beats, dialogue, subtext, setup/payoff | Camera design or provider prompts |
-| Selected `generative-media-skills` | Cinematography, performance, production design, continuity craft, previsualization, media QA, broad editing craft | Pipeline orchestration or model API syntax |
-| OpenMontage provider leaf skills | Model-specific prompt grammar, parameters, reference modes, limitations, failure repair | The stable creative source of truth |
+| OpenMontage | Orchestration, manifests, stage state, ComfyUI execution, assets, rendering, provenance, and approval gates | A duplicated encyclopedia of every filmmaking discipline |
+| `screenwriting-skills-en-optimized` | Premise, theme, objectives, conflict, scene purpose, beats, dialogue, subtext, setup/payoff | Camera design or generation prompts |
+| Selected `generative-media-skills` | Cinematography, performance, production design, continuity craft, previsualization, media QA, broad editing craft | Pipeline orchestration or workflow node syntax |
+| Prompt dialect compilers | Model-appropriate wording for H3 and WAN 3 before an opaque ComfyUI workflow | Workflow execution or the stable creative source of truth |
 | Future `cinematic-editing-skills` | Deep narrative picture-editing knowledge if needed | Pre-generation continuity approval |
 
 External knowledge is selected per stage. It is not copied wholesale into
@@ -66,8 +66,8 @@ Derived artifacts are:
 
 - `continuity_report`: advisory pre-generation review of conventional continuity,
   coverage, risks, intentional exceptions, and repairs.
-- `prompt_package`: provider/model/version-specific compilation of every approved
-  shot, including parameters, reference bindings, negative constraints, and cost.
+- `prompt_package`: prompt-dialect compilation of every approved shot plus its
+  ComfyUI workflow contract, exposed inputs, output node, and reference bindings.
 - `take_qa_report`: observations and usable ranges for actual generated takes.
 
 `lib/narrative_contracts.py` validates cross-artifact identifiers and completeness.
@@ -99,15 +99,18 @@ crossing can pass when motivated and supported by an axis-reset shot.
 ## Prompt compilation
 
 The shot plan remains the creative source of truth. The Prompt Compiler reads an
-approved `shot_plan` and `continuity_report`, then emits one model-specific entry per
+approved `shot_plan` and `continuity_report`, then emits one dialect-specific entry per
 shot. A compiler may change wording, parameter names, reference labels, duration
 limits, negative syntax, or failure-mitigation strategy; it may not silently change
 blocking, lens intent, axis side, performance, narrative purpose, or shot order.
 
-Compiler implementations should be modular by provider/model/version. Seedance 2.5
-and MiniMax H3 are the first targets; WAN requires a fresh adapter audit, especially
-for future Venice-backed workflows. The dry-run gate at `prompt_compile` allows the
-complete planning chain to be reviewed with no paid API call.
+Narrative video execution has one boundary: an opaque, premade ComfyUI API workflow.
+The deterministic compiler module supports MiniMax H3 and WAN 3 prompt dialects but
+does not select or call whatever model/service is inside the graph. A small workflow
+contract declares only existing node inputs and the video output node. The compiler
+preserves structured exact dialogue, continuity state, and edit-boundary needs while
+binding only those declared inputs. The dry-run gate reviews this complete handoff
+without queuing a ComfyUI job. See `docs/NARRATIVE_PROMPT_COMPILERS.md`.
 
 ## External repository assessment
 
@@ -159,12 +162,12 @@ runtime dependency beside OpenMontage's existing model leaf skills. Its Seedance
 material is a useful cross-check, and its MiniMax H3 treatment is materially deeper
 than OpenMontage's current H3 skill. Selectively adapt verified H3 reference modes,
 labels, retention, and performance-transfer guidance. Its WAN material is centered
-on Wan 2.2 and is not sufficient authority for WAN3 or Venice integration.
+on Wan 2.2 and is not sufficient authority for the WAN 3 prompt dialect.
 
 ### Architectural references
 
 - `director-skills`: adopt separation of creative intent, cinematic execution,
-  provider adaptation, and generation-failure diagnosis. Do not vendor the package.
+  prompt adaptation, and generation-failure diagnosis. Do not vendor the package.
 - Oberon: adopt global versus sequential continuity, entrance/exit shot memory,
   take-level QA, and later EDL concepts. Do not adopt simplistic deterministic
   screen-direction heuristics.
@@ -177,24 +180,26 @@ on Wan 2.2 and is not sufficient authority for WAN3 or Venice integration.
 `examples/narrative-dialogue-dry-run/` contains **The Last Bus**, a four-shot diner
 conversation. It demonstrates scene purpose and beats, a two-character axis and
 eyelines, a global continuity bible, shot/reverse-shot coverage, sequential state,
-three edit boundaries, continuity findings, and Seedance 2.5 prompt compilation.
+three edit boundaries, continuity findings, and H3/WAN 3 ComfyUI prompt compilation.
 It intentionally records zero generation calls and zero cost.
 
 ## Implemented now
 
-- Separate beta `narrative-movie` manifest with explicit approval and cost boundaries.
+- Separate beta `narrative-movie` manifest with explicit planning/execution approvals.
 - Eleven stage-director skills, including distinct continuity, prompt compilation,
   generated-take QA, and picture-editing stages.
 - Six JSON Schema artifact types and checkpoint artifact routing.
 - Deterministic cross-artifact validation for the planning bundle and take selection.
+- Deterministic MiniMax H3 and WAN 3 prompt dialects over opaque ComfyUI workflow
+  contracts, a dry-run CLI, and dialogue/duration/reference validation.
 - Selective external-skill dependency policy.
 - A schema-valid, no-cost dialogue-scene dry run and contract tests.
 
 ## Intentionally deferred
 
-- Paid video generation and automated regeneration loops.
+- Live ComfyUI video generation and automated regeneration loops.
 - Vision-model take scoring beyond the take-QA interface and existing analysis tools.
-- Production Prompt Compiler implementations for each provider/model version.
+- Additional prompt dialects and registration of the user's real local workflows.
 - Deep narrative picture-editing skill package and automatic EDL generation.
 - Aggressive pruning or hiding of generic OpenMontage workflows.
 
@@ -206,8 +211,7 @@ production `cinematic` manifest, generic tool registry, provider interfaces, and
 composition engines remain unchanged. Keep `calesthio/OpenMontage` as `upstream` and
 follow `docs/UPSTREAM_SYNC.md` for updates.
 
-The next milestone should turn the dry run into a controlled one-shot sample loop:
-implement one versioned Seedance 2.5 compiler plus the stronger H3 compiler,
-generate one low-cost take for one approved shot, run frame/vision QA, and prove a
-rejected take can produce a targeted compiler revision without mutating the
-provider-independent shot intent.
+The next milestone should register the user's real H3 and WAN 3 API-format workflows,
+bind their exact exposed inputs and output nodes, then run one approved shot through
+ComfyUI. Frame/vision QA should prove a rejected take can produce a targeted prompt
+revision without mutating provider-independent shot intent.

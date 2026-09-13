@@ -162,7 +162,7 @@ class ComfyUIVideo(BaseTool):
             },
             "operation": {
                 "type": "string",
-                "enum": ["text_to_video", "image_to_video"],
+                "enum": ["text_to_video", "image_to_video", "custom_workflow"],
                 "default": "text_to_video",
             },
             "model_family": {
@@ -253,6 +253,29 @@ class ComfyUIVideo(BaseTool):
                 ),
                 "items": {"type": "object"},
             },
+            "workflow_input_bindings": {
+                "type": "object",
+                "description": (
+                    "For a custom workflow, maps semantic input names to existing "
+                    "ComfyUI node_id/input_name pairs. The workflow remains opaque."
+                ),
+                "additionalProperties": {
+                    "type": "object",
+                    "required": ["node_id", "input_name"],
+                    "properties": {
+                        "node_id": {"type": "string"},
+                        "input_name": {"type": "string"},
+                    },
+                    "additionalProperties": False,
+                },
+            },
+            "workflow_inputs": {
+                "type": "object",
+                "description": (
+                    "Semantic values injected through workflow_input_bindings. "
+                    "Only declared bindings are patched."
+                ),
+            },
             "timeout_seconds": {
                 "type": "integer",
                 "description": (
@@ -289,6 +312,8 @@ class ComfyUIVideo(BaseTool):
         "height",
         "num_frames",
         "seed",
+        "workflow_input_bindings",
+        "workflow_inputs",
     ]
     side_effects = ["writes video file to output_path"]
     user_visible_verification = [
@@ -496,6 +521,7 @@ class ComfyUIVideo(BaseTool):
         try:
             if custom_workflow:
                 workflow = self._load_custom_workflow(inputs)
+                workflow = self._bind_custom_workflow_inputs(workflow, inputs)
                 output_node = str(inputs["output_node"])
             elif model_family in partner_nodes:
                 node_class = partner_nodes[model_family]
@@ -658,6 +684,40 @@ class ComfyUIVideo(BaseTool):
         if inputs.get("workflow_json"):
             return json.loads(inputs["workflow_json"])
         return ComfyUIClient.load_workflow(Path(inputs["workflow_path"]))
+
+    @staticmethod
+    def _bind_custom_workflow_inputs(
+        workflow: dict[str, Any], inputs: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Patch only inputs declared by an external workflow contract."""
+
+        bindings = inputs.get("workflow_input_bindings") or {}
+        values = inputs.get("workflow_inputs") or {}
+        if not bindings and not values:
+            return workflow
+        missing_bindings = set(values) - set(bindings)
+        if missing_bindings:
+            raise ComfyUIError(
+                "No workflow input binding for: "
+                + ", ".join(sorted(missing_bindings))
+            )
+        patches: dict[str, dict[str, Any]] = {}
+        for semantic, value in values.items():
+            binding = bindings[semantic]
+            node_id = str(binding["node_id"])
+            input_name = str(binding["input_name"])
+            if node_id not in workflow:
+                raise ComfyUIError(
+                    f"Workflow binding {semantic!r} references missing node {node_id!r}"
+                )
+            node_inputs = workflow[node_id].get("inputs", {})
+            if input_name not in node_inputs:
+                raise ComfyUIError(
+                    f"Workflow binding {semantic!r} references missing input "
+                    f"{node_id}.{input_name}"
+                )
+            patches.setdefault(node_id, {})[input_name] = value
+        return ComfyUIClient.patch_workflow(workflow, patches)
 
     @staticmethod
     def _model_name(inputs: dict[str, Any], custom_workflow: bool) -> str:

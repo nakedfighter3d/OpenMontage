@@ -759,6 +759,54 @@ class TestCustomWorkflowContract:
             "unknown_custom_workflow"
         )
 
+    def test_video_custom_workflow_patches_only_declared_inputs(self, tmp_path):
+        tool = ComfyUIVideo()
+        tool._client.is_available = lambda: True
+        seen = {}
+
+        def fake_generate(workflow, output_node, dest, **kwargs):
+            seen["workflow"] = workflow
+            return [Path(dest)]
+
+        tool._client.generate = fake_generate
+        workflow = {
+            "10": {"inputs": {"text": "old prompt", "unchanged": 7}},
+            "20": {"inputs": {"duration": 5}},
+            "99": {"inputs": {"filename_prefix": "video"}},
+        }
+        result = tool.execute({
+            "prompt": "transport prompt",
+            "workflow_json": json.dumps(workflow),
+            "output_node": "99",
+            "workflow_input_bindings": {
+                "prompt": {"node_id": "10", "input_name": "text"},
+                "duration_seconds": {"node_id": "20", "input_name": "duration"},
+            },
+            "workflow_inputs": {"prompt": "compiled prompt", "duration_seconds": 10},
+            "output_path": str(tmp_path / "video.mp4"),
+        })
+
+        assert result.success is True
+        assert seen["workflow"]["10"]["inputs"] == {
+            "text": "compiled prompt", "unchanged": 7
+        }
+        assert seen["workflow"]["20"]["inputs"]["duration"] == 10
+
+    def test_video_custom_workflow_rejects_binding_to_missing_input(self):
+        tool = ComfyUIVideo()
+        tool._client.is_available = lambda: True
+        result = tool.execute({
+            "prompt": "test",
+            "workflow_json": json.dumps({"10": {"inputs": {"text": "old"}}, "99": {"inputs": {}}}),
+            "output_node": "99",
+            "workflow_input_bindings": {
+                "prompt": {"node_id": "10", "input_name": "not_an_input"}
+            },
+            "workflow_inputs": {"prompt": "compiled"},
+        })
+        assert result.success is False
+        assert "missing input 10.not_an_input" in result.error
+
     def test_custom_workflow_accepts_model_stack_provenance(self, tmp_path):
         tool = ComfyUIVideo()
         tool._client.is_available = lambda: True

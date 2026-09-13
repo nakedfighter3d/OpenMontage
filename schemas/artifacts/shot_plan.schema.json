@@ -43,6 +43,19 @@
           "subjects": { "type": "array", "items": { "type": "string" } },
           "blocking": { "type": "string" },
           "action": { "type": "string" },
+          "dialogue": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["speaker_id", "text", "language"],
+              "properties": {
+                "speaker_id": { "type": "string" },
+                "text": { "type": "string" },
+                "language": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
           "performance_intent": { "type": "string" },
           "camera": {
             "type": "object",

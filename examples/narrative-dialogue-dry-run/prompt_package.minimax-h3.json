@@ -1,0 +1,185 @@
+{
+  "version": "1.0",
+  "id": "prompts-shots-last-bus-v1-minimax-h3-local-h3-t2v-v1",
+  "shot_plan_id": "shots-last-bus-v1",
+  "continuity_report_id": "continuity-last-bus-v1",
+  "compiler_version": "narrative-comfyui-prompt-compilers/0.2.0",
+  "compiled_shots": [
+    {
+      "shot_id": "SH001",
+      "provider": "comfyui",
+      "model": "workflow:local-h3-t2v",
+      "mode": "text_to_video",
+      "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Orient the relationship and make Mara's offer legible in one uninterrupted action. Subjects: mara, eli. Starting state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: square to table; mara: angled toward Eli); eyelines (eli: table; mara: Eli); movement (eli: still; mara: right hand toward frame center); action (Mara covers the envelope with her right hand); props (ticket-envelope: sealed beneath Mara's right hand); emotion (eli: defensive calm; mara: controlled hope); camera side (open end of booth). Blocking: Mara sits screen-left by the window; Eli sits screen-right by the aisle; Mara slides the envelope from her right hand toward table center. Observable action: Mara says the departure time and pushes the envelope halfway across the table; Eli stays still. Performance: Mara hides urgency inside practical delivery; Eli's stillness should register as resistance. Camera: shot size: medium-wide two-shot; position: open end of booth, three-quarter to both characters; height: seated eye level; angle: level; movement: locked-off; field of view: moderate normal; focus: deep enough to hold both faces and envelope; composition: Mara left, Eli right, envelope path visible between them. Direction and eyelines: Mara addresses screen-right; Eli addresses screen-left; eli: envelope then Mara; mara: Eli across table. Lighting: Preserve warm camera-left key and cooler background door spill. Ending state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: square to table; mara: angled toward Eli); eyelines (eli: envelope; mara: Eli); movement (eli: still; mara: hand settles at table center); action (The envelope has stopped halfway between them under Mara's fingertips); props (ticket-envelope: sealed at table center under Mara's fingertips); emotion (eli: avoidance exposed; mara: hope under control); camera side (open end of booth). Editorial handles: 0.7 seconds clean at the head; 0.8 seconds clean at the tail. Outgoing boundary: Hand off to SH002: Envelope settles and Eli lowers his eyes; cut at After the envelope stops, before Eli begins the line; At least 0.5 seconds of Eli looking down before speech. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Natural micro-movements are acceptable; Rain pattern need not match exactly. Exact dialogue: mara (S1) says exactly <d>[English] It leaves at eleven.</d>.\n\noverall_soundscape: Diner room tone continues; Eli's breath may begin under SH001 tail\n\nnon_diegetic_music: N/A",
+      "negative_prompt": null,
+      "parameters": {
+        "tool": "comfyui_video",
+        "operation": "custom_workflow",
+        "workflow_contract_id": "local-h3-t2v",
+        "workflow_path": "local/workflows/h3-t2v-api.json",
+        "output_node": "99",
+        "workflow_name": "Locally supplied H3 text-to-video workflow",
+        "workflow_input_bindings": {
+          "prompt": {
+            "node_id": "10",
+            "input_name": "text"
+          },
+          "duration_seconds": {
+            "node_id": "20",
+            "input_name": "duration"
+          },
+          "aspect_ratio": {
+            "node_id": "20",
+            "input_name": "aspect_ratio"
+          },
+          "generate_audio": {
+            "node_id": "20",
+            "input_name": "audio"
+          }
+        },
+        "workflow_inputs": {
+          "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Orient the relationship and make Mara's offer legible in one uninterrupted action. Subjects: mara, eli. Starting state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: square to table; mara: angled toward Eli); eyelines (eli: table; mara: Eli); movement (eli: still; mara: right hand toward frame center); action (Mara covers the envelope with her right hand); props (ticket-envelope: sealed beneath Mara's right hand); emotion (eli: defensive calm; mara: controlled hope); camera side (open end of booth). Blocking: Mara sits screen-left by the window; Eli sits screen-right by the aisle; Mara slides the envelope from her right hand toward table center. Observable action: Mara says the departure time and pushes the envelope halfway across the table; Eli stays still. Performance: Mara hides urgency inside practical delivery; Eli's stillness should register as resistance. Camera: shot size: medium-wide two-shot; position: open end of booth, three-quarter to both characters; height: seated eye level; angle: level; movement: locked-off; field of view: moderate normal; focus: deep enough to hold both faces and envelope; composition: Mara left, Eli right, envelope path visible between them. Direction and eyelines: Mara addresses screen-right; Eli addresses screen-left; eli: envelope then Mara; mara: Eli across table. Lighting: Preserve warm camera-left key and cooler background door spill. Ending state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: square to table; mara: angled toward Eli); eyelines (eli: envelope; mara: Eli); movement (eli: still; mara: hand settles at table center); action (The envelope has stopped halfway between them under Mara's fingertips); props (ticket-envelope: sealed at table center under Mara's fingertips); emotion (eli: avoidance exposed; mara: hope under control); camera side (open end of booth). Editorial handles: 0.7 seconds clean at the head; 0.8 seconds clean at the tail. Outgoing boundary: Hand off to SH002: Envelope settles and Eli lowers his eyes; cut at After the envelope stops, before Eli begins the line; At least 0.5 seconds of Eli looking down before speech. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Natural micro-movements are acceptable; Rain pattern need not match exactly. Exact dialogue: mara (S1) says exactly <d>[English] It leaves at eleven.</d>.\n\noverall_soundscape: Diner room tone continues; Eli's breath may begin under SH001 tail\n\nnon_diegetic_music: N/A",
+          "duration_seconds": 6,
+          "aspect_ratio": "16:9",
+          "generate_audio": true
+        }
+      },
+      "reference_bindings": [],
+      "compile_notes": []
+    },
+    {
+      "shot_id": "SH002",
+      "provider": "comfyui",
+      "model": "workflow:local-h3-t2v",
+      "mode": "text_to_video",
+      "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Hold on Eli long enough for his practical sentence to become a refusal. Subjects: eli, mara. Starting state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: square to table; mara: angled toward Eli); eyelines (eli: envelope; mara: Eli); movement (eli: still; mara: hand settled at table center); action (The envelope has stopped halfway between them under Mara's fingertips); props (ticket-envelope: sealed at table center under Mara's fingertips); emotion (eli: avoidance exposed; mara: hope under control); camera side (open end of booth). Blocking: Eli remains aisle-side; Mara's soft shoulder is foreground-left; Eli looks down to the envelope then toward Mara only on the final word. Observable action: Eli does not touch the envelope and says she should leave before the rain. Performance: Gentle evasion with a late, guilty eyeline; no overt sadness. Camera: shot size: medium close-up over Mara's shoulder; position: Mara side of the open booth, still on established camera half-plane; height: seated eye level; angle: three-quarter on Eli; movement: locked-off; field of view: normal-to-mild portrait; focus: Eli's eyes; Mara shoulder soft; composition: Eli right-of-center with look room toward screen-left. Direction and eyelines: Eli looks screen-left toward Mara; eli: envelope, then Mara screen-left; mara: Eli screen-right. Lighting: Same warm key side; background door remains cool and subdued. Ending state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: chin lifted slightly toward Mara; mara: angled toward Eli); eyelines (eli: Mara screen-left; mara: Eli); movement (eli: eyes finish lifting left; mara: still); action (Eli finishes the line without touching the envelope); props (ticket-envelope: sealed at table center under Mara's fingertips); emotion (eli: shame beginning; mara: hope collapsing); camera side (open end of booth). Editorial handles: 0.7 seconds clean at the head; 0.8 seconds clean at the tail. Incoming boundary: Enter from SH001: Eli's eyes are already on the envelope before he speaks; cut at After the envelope stops, before Eli begins the line; At least 0.5 seconds of Eli looking down before speech. Outgoing boundary: Hand off to SH003: Eli completes the line looking toward Mara; cut at On the silence immediately after Eli's final word; Clean silence before hand motion and after it settles. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Mara shoulder silhouette may vary slightly. Exact dialogue: eli (S1) says exactly <d>[English] You should get there before the rain.</d>.\n\noverall_soundscape: Diner room tone continues; Eli's breath may begin under SH001 tail\n\nnon_diegetic_music: N/A",
+      "negative_prompt": null,
+      "parameters": {
+        "tool": "comfyui_video",
+        "operation": "custom_workflow",
+        "workflow_contract_id": "local-h3-t2v",
+        "workflow_path": "local/workflows/h3-t2v-api.json",
+        "output_node": "99",
+        "workflow_name": "Locally supplied H3 text-to-video workflow",
+        "workflow_input_bindings": {
+          "prompt": {
+            "node_id": "10",
+            "input_name": "text"
+          },
+          "duration_seconds": {
+            "node_id": "20",
+            "input_name": "duration"
+          },
+          "aspect_ratio": {
+            "node_id": "20",
+            "input_name": "aspect_ratio"
+          },
+          "generate_audio": {
+            "node_id": "20",
+            "input_name": "audio"
+          }
+        },
+        "workflow_inputs": {
+          "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Hold on Eli long enough for his practical sentence to become a refusal. Subjects: eli, mara. Starting state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: square to table; mara: angled toward Eli); eyelines (eli: envelope; mara: Eli); movement (eli: still; mara: hand settled at table center); action (The envelope has stopped halfway between them under Mara's fingertips); props (ticket-envelope: sealed at table center under Mara's fingertips); emotion (eli: avoidance exposed; mara: hope under control); camera side (open end of booth). Blocking: Eli remains aisle-side; Mara's soft shoulder is foreground-left; Eli looks down to the envelope then toward Mara only on the final word. Observable action: Eli does not touch the envelope and says she should leave before the rain. Performance: Gentle evasion with a late, guilty eyeline; no overt sadness. Camera: shot size: medium close-up over Mara's shoulder; position: Mara side of the open booth, still on established camera half-plane; height: seated eye level; angle: three-quarter on Eli; movement: locked-off; field of view: normal-to-mild portrait; focus: Eli's eyes; Mara shoulder soft; composition: Eli right-of-center with look room toward screen-left. Direction and eyelines: Eli looks screen-left toward Mara; eli: envelope, then Mara screen-left; mara: Eli screen-right. Lighting: Same warm key side; background door remains cool and subdued. Ending state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: chin lifted slightly toward Mara; mara: angled toward Eli); eyelines (eli: Mara screen-left; mara: Eli); movement (eli: eyes finish lifting left; mara: still); action (Eli finishes the line without touching the envelope); props (ticket-envelope: sealed at table center under Mara's fingertips); emotion (eli: shame beginning; mara: hope collapsing); camera side (open end of booth). Editorial handles: 0.7 seconds clean at the head; 0.8 seconds clean at the tail. Incoming boundary: Enter from SH001: Eli's eyes are already on the envelope before he speaks; cut at After the envelope stops, before Eli begins the line; At least 0.5 seconds of Eli looking down before speech. Outgoing boundary: Hand off to SH003: Eli completes the line looking toward Mara; cut at On the silence immediately after Eli's final word; Clean silence before hand motion and after it settles. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Mara shoulder silhouette may vary slightly. Exact dialogue: eli (S1) says exactly <d>[English] You should get there before the rain.</d>.\n\noverall_soundscape: Diner room tone continues; Eli's breath may begin under SH001 tail\n\nnon_diegetic_music: N/A",
+          "duration_seconds": 5,
+          "aspect_ratio": "16:9",
+          "generate_audio": true
+        }
+      },
+      "reference_bindings": [],
+      "compile_notes": []
+    },
+    {
+      "shot_id": "SH003",
+      "provider": "comfyui",
+      "model": "workflow:local-h3-t2v",
+      "mode": "text_to_video",
+      "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Turn the untouched envelope into the visible answer and bridge the emotional cut. Subjects: mara, eli. Starting state: positions (eli: aisle-side seat, hand in frame-right; mara: window-side seat, right forearm in frame-left); body orientation (eli: toward table; mara: toward table); eyelines (eli: envelope; mara: envelope); movement (eli: still; mara: fingertips begin moving screen-left); action (Eli has finished speaking; Mara begins to withdraw her hand); props (ticket-envelope: sealed at exact table center); emotion (eli: shame; mara: recognition); camera side (open end of booth). Blocking: Only forearms enter frame: Mara slowly withdraws her fingertips left; Eli's hand remains near his coffee on the right and never reaches. Observable action: The envelope stays sealed at center as Mara removes her hand. Performance: The withdrawal is small and final, without flourish. Camera: shot size: close insert; position: above table from established open-booth side; height: slightly above tabletop; angle: shallow downward angle; movement: locked-off; field of view: normal close focus; focus: envelope and fingertips; composition: envelope centered, Mara's hand exits left, Eli's hand remains right. Direction and eyelines: Mara's hand withdraws screen-left; Eli's hand remains screen-right; eli: envelope; mara: envelope. Lighting: Same warm overhead practical reflected softly on laminate. Ending state: positions (eli: aisle-side seat, hand in frame-right; mara: window-side seat, hand outside insert); body orientation (eli: toward table; mara: toward table); eyelines (eli: envelope; mara: envelope); movement (eli: still; mara: hand settled off frame-left); action (The untouched envelope remains alone at table center); props (ticket-envelope: sealed and untouched at exact table center); emotion (eli: shame; mara: quiet recognition); camera side (open end of booth). Editorial handles: 0.5 seconds clean at the head; 0.7 seconds clean at the tail. Incoming boundary: Enter from SH002: Mara's fingertips begin withdrawing from the envelope; cut at On the silence immediately after Eli's final word; Clean silence before hand motion and after it settles. Outgoing boundary: Hand off to SH004: Mara's hand finishes withdrawing, leaving the envelope alone; cut at After the hand settles, just before the inhale; At least 0.5 seconds of settled envelope and 0.8 seconds before Mara speaks. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Coffee cup may remain soft and partly cropped.\n\noverall_soundscape: Room tone and rain continue; no score\n\nnon_diegetic_music: N/A",
+      "negative_prompt": null,
+      "parameters": {
+        "tool": "comfyui_video",
+        "operation": "custom_workflow",
+        "workflow_contract_id": "local-h3-t2v",
+        "workflow_path": "local/workflows/h3-t2v-api.json",
+        "output_node": "99",
+        "workflow_name": "Locally supplied H3 text-to-video workflow",
+        "workflow_input_bindings": {
+          "prompt": {
+            "node_id": "10",
+            "input_name": "text"
+          },
+          "duration_seconds": {
+            "node_id": "20",
+            "input_name": "duration"
+          },
+          "aspect_ratio": {
+            "node_id": "20",
+            "input_name": "aspect_ratio"
+          },
+          "generate_audio": {
+            "node_id": "20",
+            "input_name": "audio"
+          }
+        },
+        "workflow_inputs": {
+          "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Turn the untouched envelope into the visible answer and bridge the emotional cut. Subjects: mara, eli. Starting state: positions (eli: aisle-side seat, hand in frame-right; mara: window-side seat, right forearm in frame-left); body orientation (eli: toward table; mara: toward table); eyelines (eli: envelope; mara: envelope); movement (eli: still; mara: fingertips begin moving screen-left); action (Eli has finished speaking; Mara begins to withdraw her hand); props (ticket-envelope: sealed at exact table center); emotion (eli: shame; mara: recognition); camera side (open end of booth). Blocking: Only forearms enter frame: Mara slowly withdraws her fingertips left; Eli's hand remains near his coffee on the right and never reaches. Observable action: The envelope stays sealed at center as Mara removes her hand. Performance: The withdrawal is small and final, without flourish. Camera: shot size: close insert; position: above table from established open-booth side; height: slightly above tabletop; angle: shallow downward angle; movement: locked-off; field of view: normal close focus; focus: envelope and fingertips; composition: envelope centered, Mara's hand exits left, Eli's hand remains right. Direction and eyelines: Mara's hand withdraws screen-left; Eli's hand remains screen-right; eli: envelope; mara: envelope. Lighting: Same warm overhead practical reflected softly on laminate. Ending state: positions (eli: aisle-side seat, hand in frame-right; mara: window-side seat, hand outside insert); body orientation (eli: toward table; mara: toward table); eyelines (eli: envelope; mara: envelope); movement (eli: still; mara: hand settled off frame-left); action (The untouched envelope remains alone at table center); props (ticket-envelope: sealed and untouched at exact table center); emotion (eli: shame; mara: quiet recognition); camera side (open end of booth). Editorial handles: 0.5 seconds clean at the head; 0.7 seconds clean at the tail. Incoming boundary: Enter from SH002: Mara's fingertips begin withdrawing from the envelope; cut at On the silence immediately after Eli's final word; Clean silence before hand motion and after it settles. Outgoing boundary: Hand off to SH004: Mara's hand finishes withdrawing, leaving the envelope alone; cut at After the hand settles, just before the inhale; At least 0.5 seconds of settled envelope and 0.8 seconds before Mara speaks. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Coffee cup may remain soft and partly cropped.\n\noverall_soundscape: Room tone and rain continue; no score\n\nnon_diegetic_music: N/A",
+          "duration_seconds": 4,
+          "aspect_ratio": "16:9",
+          "generate_audio": true
+        }
+      },
+      "reference_bindings": [],
+      "compile_notes": [
+        "Planned edit duration is 3s; workflow input uses 4s and the difference is removable edit-handle material."
+      ]
+    },
+    {
+      "shot_id": "SH004",
+      "provider": "comfyui",
+      "model": "workflow:local-h3-t2v",
+      "mode": "text_to_video",
+      "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Let Mara's recognition, not the prop, end the scene. Subjects: mara, eli. Starting state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: toward Mara; mara: toward table); eyelines (eli: Mara; mara: envelope below frame); movement (eli: still; mara: still before breath); action (The untouched envelope remains alone at table center); props (ticket-envelope: sealed and untouched at exact table center); emotion (eli: shame; mara: quiet recognition); camera side (open end of booth). Blocking: Mara remains window-side; Eli's soft shoulder is foreground-right; Mara looks down, takes one breath, then looks toward Eli and says the line. Observable action: Mara says 'I know' and holds his eyeline for one beat. Performance: Recognition without accusation; the smallest possible change around the eyes. Camera: shot size: close-up over Eli's shoulder; position: Eli side of the open booth, same established camera half-plane; height: seated eye level; angle: three-quarter on Mara; movement: very slow 10 cm push beginning on her breath; field of view: mild portrait; focus: Mara's eyes; Eli shoulder soft; composition: Mara left-of-center with look room toward screen-right. Direction and eyelines: Mara looks screen-right toward Eli; eli: Mara screen-left; mara: Eli screen-right. Lighting: Warm key remains camera-left; window side of her face falls gently into shadow. Ending state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: toward Mara; mara: toward Eli); eyelines (eli: Mara screen-left; mara: Eli screen-right); movement (eli: still; mara: still after line); action (Mara holds Eli's eyeline after saying 'I know'); props (ticket-envelope: sealed and untouched at exact table center); emotion (eli: shame; mara: resolved sadness); camera side (open end of booth). Editorial handles: 0.8 seconds clean at the head; 1.0 seconds clean at the tail. Incoming boundary: Enter from SH003: Mara begins the breath that precedes her line; cut at After the hand settles, just before the inhale; At least 0.5 seconds of settled envelope and 0.8 seconds before Mara speaks. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Push may be imperceptible but must not become a zoom. Exact dialogue: mara (S1) says exactly <d>[English] I know.</d>.\n\noverall_soundscape: Her inhale starts as an optional J-cut over the settled insert\n\nnon_diegetic_music: N/A",
+      "negative_prompt": null,
+      "parameters": {
+        "tool": "comfyui_video",
+        "operation": "custom_workflow",
+        "workflow_contract_id": "local-h3-t2v",
+        "workflow_path": "local/workflows/h3-t2v-api.json",
+        "output_node": "99",
+        "workflow_name": "Locally supplied H3 text-to-video workflow",
+        "workflow_input_bindings": {
+          "prompt": {
+            "node_id": "10",
+            "input_name": "text"
+          },
+          "duration_seconds": {
+            "node_id": "20",
+            "input_name": "duration"
+          },
+          "aspect_ratio": {
+            "node_id": "20",
+            "input_name": "aspect_ratio"
+          },
+          "generate_audio": {
+            "node_id": "20",
+            "input_name": "audio"
+          }
+        },
+        "workflow_inputs": {
+          "prompt": "integrated_multimodal_description: [Shot 1] Single continuous shot; do not introduce an internal edit. Narrative function: Let Mara's recognition, not the prop, end the scene. Subjects: mara, eli. Starting state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: toward Mara; mara: toward table); eyelines (eli: Mara; mara: envelope below frame); movement (eli: still; mara: still before breath); action (The untouched envelope remains alone at table center); props (ticket-envelope: sealed and untouched at exact table center); emotion (eli: shame; mara: quiet recognition); camera side (open end of booth). Blocking: Mara remains window-side; Eli's soft shoulder is foreground-right; Mara looks down, takes one breath, then looks toward Eli and says the line. Observable action: Mara says 'I know' and holds his eyeline for one beat. Performance: Recognition without accusation; the smallest possible change around the eyes. Camera: shot size: close-up over Eli's shoulder; position: Eli side of the open booth, same established camera half-plane; height: seated eye level; angle: three-quarter on Mara; movement: very slow 10 cm push beginning on her breath; field of view: mild portrait; focus: Mara's eyes; Eli shoulder soft; composition: Mara left-of-center with look room toward screen-right. Direction and eyelines: Mara looks screen-right toward Eli; eli: Mara screen-left; mara: Eli screen-right. Lighting: Warm key remains camera-left; window side of her face falls gently into shadow. Ending state: positions (eli: aisle-side seat; mara: window-side seat); body orientation (eli: toward Mara; mara: toward Eli); eyelines (eli: Mara screen-left; mara: Eli screen-right); movement (eli: still; mara: still after line); action (Mara holds Eli's eyeline after saying 'I know'); props (ticket-envelope: sealed and untouched at exact table center); emotion (eli: shame; mara: resolved sadness); camera side (open end of booth). Editorial handles: 0.8 seconds clean at the head; 1.0 seconds clean at the tail. Incoming boundary: Enter from SH003: Mara begins the breath that precedes her line; cut at After the hand settles, just before the inhale; At least 0.5 seconds of settled envelope and 0.8 seconds before Mara speaks. Global continuity: Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.; Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli; night; warm overhead diner practical from camera-left with cool spill through the front windows; light rain outside; quiet room tone; mara — identity: short dark hair, tired alert eyes, small scar at left eyebrow; wardrobe: dark green wool coat, cream blouse, no hat | eli — identity: lean face, wavy brown hair, faint moustache; wardrobe: brown work jacket, blue chambray shirt; Must keep: Mara screen-left and Eli screen-right in relational coverage; Warm key direction remains camera-left; Envelope remains sealed and unmarked. Allowed tolerances: Push may be imperceptible but must not become a zoom. Exact dialogue: mara (S1) says exactly <d>[English] I know.</d>.\n\noverall_soundscape: Her inhale starts as an optional J-cut over the settled insert\n\nnon_diegetic_music: N/A",
+          "duration_seconds": 5,
+          "aspect_ratio": "16:9",
+          "generate_audio": true
+        }
+      },
+      "reference_bindings": [],
+      "compile_notes": []
+    }
+  ],
+  "metadata": {
+    "dry_run": true,
+    "generation_calls": 0,
+    "transport": "comfyui-custom-workflow",
+    "prompt_dialect": "minimax-h3"
+  }
+}
