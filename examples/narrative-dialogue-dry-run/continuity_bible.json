@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "id": "bible-last-bus",
+  "scene_intent_id": "scene-last-bus",
+  "visual_direction": "Restrained late-1970s American location drama; ordinary diner surfaces, motivated practical light, faces allowed to fall partly into shadow.",
+  "characters": [
+    {
+      "character_id": "mara",
+      "identity_traits": ["short dark hair", "tired alert eyes", "small scar at left eyebrow"],
+      "wardrobe": ["dark green wool coat", "cream blouse", "no hat"],
+      "approved_reference_ids": []
+    },
+    {
+      "character_id": "eli",
+      "identity_traits": ["lean face", "wavy brown hair", "faint moustache"],
+      "wardrobe": ["brown work jacket", "blue chambray shirt"],
+      "approved_reference_ids": []
+    }
+  ],
+  "props": [
+    {
+      "id": "ticket-envelope",
+      "description": "Small unmarked cream paper envelope containing a bus ticket",
+      "initial_state": "sealed, beneath Mara's right hand",
+      "locked_traits": ["unmarked", "sealed", "single envelope"],
+      "approved_reference_ids": []
+    }
+  ],
+  "environment": {
+    "description": "Worn red vinyl booth, laminate table, dark window beside Mara, aisle and front door behind Eli",
+    "time_of_day": "night",
+    "lighting_state": "warm overhead diner practical from camera-left with cool spill through the front windows",
+    "weather_or_atmosphere": "light rain outside; quiet room tone",
+    "approved_reference_ids": []
+  },
+  "geography": {
+    "anchors": [
+      "Mara remains window-side",
+      "Eli remains aisle-side",
+      "envelope travels from Mara's side to table center",
+      "front door remains behind Eli"
+    ],
+    "active_axis": "The line connecting Mara and Eli across the booth table",
+    "default_camera_side": "The open end of the booth, never crossing behind either character",
+    "screen_side_assignments": {
+      "mara": "screen-left in master; looks screen-right in single",
+      "eli": "screen-right in master; looks screen-left in single"
+    },
+    "intentional_axis_crossing_plan": null
+  },
+  "global_must_keep": [
+    "Mara screen-left and Eli screen-right in relational coverage",
+    "Warm key direction remains camera-left",
+    "Envelope remains sealed and unmarked"
+  ],
+  "global_must_avoid": [
+    "Additional customers entering the booth area",
+    "Readable text or logos",
+    "Camera crossing the dialogue axis"
+  ],
+  "metadata": {"example": true}
+}

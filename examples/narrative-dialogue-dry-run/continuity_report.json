@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "id": "continuity-last-bus-v1",
+  "shot_plan_id": "shots-last-bus-v1",
+  "status": "pass_with_risks",
+  "findings": [
+    {
+      "rule": "180_degree",
+      "outcome": "pass",
+      "boundary_id": null,
+      "shot_ids": ["SH001", "SH002", "SH003", "SH004"],
+      "reason": "All camera positions remain at the open end of the booth on one side of the Mara-Eli axis.",
+      "risk": "Provider-generated shoulder placement could accidentally imply a reverse camera side.",
+      "intentional_exception": false,
+      "repair_strategies": ["Use the relationship master as reference", "Restate Mara-left and Eli-right in each compiled prompt"]
+    },
+    {
+      "rule": "eyeline",
+      "outcome": "pass",
+      "boundary_id": "EB001",
+      "shot_ids": ["SH001", "SH002"],
+      "reason": "Eli's single preserves a screen-left eyeline toward Mara.",
+      "risk": "A centered gaze would weaken the offscreen relationship.",
+      "intentional_exception": false,
+      "repair_strategies": ["Reject a take with camera-facing eyeline", "Use Mara's foreground shoulder to anchor the target"]
+    },
+    {
+      "rule": "30_degree",
+      "outcome": "pass",
+      "boundary_id": "EB001",
+      "shot_ids": ["SH001", "SH002"],
+      "reason": "The cut changes from a medium-wide two-shot to a medium close OTS with a clear subject emphasis change.",
+      "risk": "If the generated OTS becomes too wide, the cut may feel like a framing correction.",
+      "intentional_exception": false,
+      "repair_strategies": ["Compile SH002 as a true medium close-up", "Use the insert fallback between similar framings"]
+    },
+    {
+      "rule": "match_on_action",
+      "outcome": "risk",
+      "boundary_id": "EB002",
+      "shot_ids": ["SH002", "SH003"],
+      "reason": "The insert begins a new hand action rather than continuing an outgoing action.",
+      "risk": "Without a clean pause, the cut can feel temporally discontinuous.",
+      "intentional_exception": false,
+      "repair_strategies": ["Require silence and stillness handles around the cut", "Use Eli's eyeline as the motivation", "Fall back to SH002 directly into SH004"]
+    },
+    {
+      "rule": "coverage",
+      "outcome": "pass",
+      "boundary_id": null,
+      "shot_ids": ["SH001", "SH002", "SH003", "SH004"],
+      "reason": "The master orients, both decisive performances are covered, and the insert carries the story object and fallback function.",
+      "risk": "There is no separate neutral two-shot after the emotional turn.",
+      "intentional_exception": false,
+      "repair_strategies": ["Use the SH001 tail as a re-establishing option if generated long enough"]
+    }
+  ],
+  "coverage_assessment": {
+    "orientation": "SH001 clearly establishes the booth, screen sides, prop, and relationship.",
+    "decisive_actions": "The offer, evasion, hand withdrawal, and final recognition are each visible.",
+    "reactions": "Eli's evasion and Mara's recognition receive dedicated performance coverage.",
+    "fallbacks": "The insert can bridge or be omitted; the master can carry the exchange if either single fails."
+  },
+  "approved_for_generation": true,
+  "reviewer_notes": "Generate SH001 as the first sample because it tests both identity continuity and the essential geography before paying for singles.",
+  "metadata": {"example": true, "review_mode": "dry_run"}
+}

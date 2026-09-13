@@ -96,6 +96,7 @@ Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3. See `skills/INDE
 | `clip-factory` | `pipeline_defs/clip-factory.yaml` | Short-form batch extraction |
 | `podcast-repurpose` | `pipeline_defs/podcast-repurpose.yaml` | Podcast repurposing |
 | `cinematic` | `pipeline_defs/cinematic.yaml` | Cinematic edit |
+| `narrative-movie` | `pipeline_defs/narrative-movie.yaml` | Beta narrative coverage and filmmaking |
 | `animation` | `pipeline_defs/animation.yaml` | Animation-first |
 | `character-animation` | `pipeline_defs/character-animation.yaml` | Local rigged character animation |
 | `hybrid` | `pipeline_defs/hybrid.yaml` | Source-plus-support hybrid |
@@ -110,6 +111,9 @@ Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3. See `skills/INDE
 3. Reference meta skills (reviewer, checkpoint-protocol) in the manifest
 4. Add compatible playbooks to the manifest
 5. Add contract tests in `tests/contracts/`
+
+The Narrative Movie extension has additional structured handoffs and external-skill
+boundaries documented in `docs/NARRATIVE_MOVIE_ARCHITECTURE.md`.
 
 ## When Building New Tools
 

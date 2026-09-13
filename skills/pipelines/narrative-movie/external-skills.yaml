@@ -1,0 +1,57 @@
+version: "0.1"
+policy: selective-on-demand
+
+dependencies:
+  - source: https://github.com/nakedfighter3d/screenwriting-skills-en-optimized
+    role: dramaturgy
+    status: available-pinned-local-install
+    revision: 0c641f19a9d4e97d4438ff763d89c35772a2dce6
+    license_notice: For personal study use.
+    installer: scripts/install_screenwriting_skills.py
+    install_policy: >
+      Install the selected folders locally into .agents/skills after explicit
+      acknowledgement of the upstream-derived study-use notice. Do not vendor them
+      into OpenMontage or install/update them during a production run.
+    selected_skills:
+      - sw-workflow
+      - sw-premise-theme
+      - sw-story-structure
+      - sw-character-conflict
+      - sw-scene-craft
+      - sw-dialogue
+    workflow_mode: subordinate
+    excluded_responsibilities:
+      - cinematography
+      - continuity enforcement
+      - provider prompting
+
+  - source: https://github.com/calesthio/generative-media-skills
+    role: filmmaking-craft
+    status: recommended-selective-install
+    selected_skills:
+      - cinematic-shot-direction
+      - performance-direction
+      - lighting-direction
+      - production-design-direction
+      - storyboard-previsualization
+      - asset-continuity-management
+      - generated-media-qa
+      - editing-montage
+    load_policy: Load only the skills required by the active stage.
+
+  - source: https://github.com/Square-Zero-Labs/video-prompting-skill
+    role: provider-prompting-research
+    status: reference-not-runtime-dependency
+    selected_topics:
+      - seedance-2-5
+      - minimax-h3
+      - wan
+    integration_policy: >
+      Compare against OpenMontage's existing provider skills and adapt verified,
+      model-specific improvements into those leaf skills. Do not install the broad
+      router alongside overlapping provider skills.
+
+references_only:
+  - https://github.com/0xhughs/director-skills
+  - https://github.com/agentlas-ai/oberon
+  - https://github.com/TateZhouSiu/create-storyboard-skill

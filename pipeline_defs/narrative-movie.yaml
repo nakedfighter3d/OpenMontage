@@ -1,0 +1,229 @@
+name: narrative-movie
+version: "0.1"
+description: >
+  Beta narrative filmmaking profile for dialogue scenes and short dramatic films.
+  It designs provider-independent coverage, validates continuity and edit boundaries
+  before paid generation, compiles shot intent for a selected model, evaluates actual
+  generated takes, and preserves picture editing as a separate creative stage.
+category: cinematic
+stability: beta
+default_checkpoint_policy: guided
+
+reference_input:
+  supported: true
+  analysis_depth: deep
+  analysis_tools:
+    - video_analyzer
+    - transcript_fetcher
+    - video_downloader
+    - scene_detect
+    - frame_sampler
+
+orchestration:
+  mode: executive-producer
+  skill: pipelines/narrative-movie/executive-producer
+  budget_default_usd: 5.00
+  max_revisions_per_stage: 3
+  max_send_backs: 3
+  max_wall_time_minutes: 30
+
+extensions:
+  custom_scripts: true
+  custom_playbooks: true
+  custom_skills: true
+  custom_tools: false
+
+metadata:
+  profile: narrative_movie_production
+  foundational_version: "0.1"
+  external_skill_profile: skills/pipelines/narrative-movie/external-skills.yaml
+  dry_run_stop_stage: prompt_compile
+
+required_skills:
+  - pipelines/narrative-movie/executive-producer
+  - pipelines/narrative-movie/proposal-director
+  - pipelines/narrative-movie/dramaturgy-director
+  - pipelines/narrative-movie/scene-design-director
+  - pipelines/narrative-movie/coverage-director
+  - pipelines/narrative-movie/continuity-director
+  - pipelines/narrative-movie/prompt-compiler
+  - pipelines/narrative-movie/asset-director
+  - pipelines/narrative-movie/take-qa-director
+  - pipelines/narrative-movie/edit-director
+  - pipelines/narrative-movie/compose-director
+  - pipelines/narrative-movie/publish-director
+  - meta/reviewer
+  - meta/checkpoint-protocol
+
+compatible_playbooks:
+  recommended: []
+  also_works: []
+  custom_allowed: true
+
+stages:
+  - name: proposal
+    skill: pipelines/narrative-movie/proposal-director
+    produces: [proposal_packet, decision_log]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Narrative scope and delivery promise are explicit
+      - Dry-run versus paid generation boundary is explicit
+      - Provider and render choices are visible, costed, and not silently assumed
+    success_criteria:
+      - Schema-valid proposal_packet and decision_log
+      - User approval before dramaturgy begins
+
+  - name: dramaturgy
+    skill: pipelines/narrative-movie/dramaturgy-director
+    required_artifacts_in: [proposal_packet]
+    produces: [scene_intent]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Scene purpose, objectives, opposition, stakes, value changes, beats, dialogue, and subtext are coherent
+      - The artifact answers what happens and why without prescribing provider prompts
+    success_criteria:
+      - Schema-valid scene_intent
+      - Pinned dramaturgy dependency passed its local integrity check
+      - Every beat changes action, information, relationship, or value
+
+  - name: scene_design
+    skill: pipelines/narrative-movie/scene-design-director
+    required_artifacts_in: [scene_intent]
+    produces: [continuity_bible]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Identity, wardrobe, props, environment, light, time, and geography are explicit
+      - The active axis and screen-side relationships are understandable
+    success_criteria:
+      - Schema-valid continuity_bible
+      - Global continuity facts are concise enough to reuse across every shot
+
+  - name: coverage
+    skill: pipelines/narrative-movie/coverage-director
+    required_artifacts_in: [scene_intent, continuity_bible]
+    produces: [shot_plan]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Coverage follows dramatic beats rather than collecting generic angles
+      - Each shot has entrance and exit state plus edit handles
+      - Every neighboring pair has an edit-boundary plan and fallback
+    success_criteria:
+      - Schema-valid shot_plan
+      - Every beat is covered and every adjacent shot pair is linked
+
+  - name: continuity
+    skill: pipelines/narrative-movie/continuity-director
+    required_artifacts_in: [scene_intent, continuity_bible, shot_plan]
+    produces: [continuity_report]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Axis, eyelines, direction, entrances, action overlap, shot-size change, and geography are assessed
+      - Rules are treated as conventions with risks, exceptions, and repair strategies
+      - Coverage is sufficient to construct the intended scene
+    success_criteria:
+      - Schema-valid continuity_report
+      - approved_for_generation is false whenever an unresolved violation would make the scene uneditable
+
+  - name: prompt_compile
+    skill: pipelines/narrative-movie/prompt-compiler
+    required_artifacts_in: [shot_plan, continuity_report]
+    produces: [prompt_package]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Provider prompts preserve the shot plan rather than replacing it
+      - Provider parameters and reference bindings are outside the stable shot intent
+      - Estimated paid cost is explicit
+    success_criteria:
+      - Schema-valid prompt_package
+      - One compiled entry per planned shot
+      - Dry-run can stop here without any generation call
+
+  - name: assets
+    skill: pipelines/narrative-movie/asset-director
+    required_artifacts_in: [shot_plan, continuity_report, prompt_package]
+    produces: [asset_manifest]
+    required_tools: [video_selector]
+    optional_tools: [image_selector, audio_enhance, music_gen]
+    tools_available: [video_selector, image_selector, audio_enhance, music_gen]
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Every paid call uses the approved provider, model, prompt, and parameters
+      - Every take is traceable to a shot and prompt-package entry
+      - Generation starts with a sample and never silently changes provider or model
+    success_criteria:
+      - Schema-valid asset_manifest
+      - Generated files exist and generation costs are reconciled
+
+  - name: take_qa
+    skill: pipelines/narrative-movie/take-qa-director
+    required_artifacts_in: [shot_plan, asset_manifest]
+    optional_artifacts_in: [prompt_package, continuity_bible]
+    produces: [take_qa_report]
+    tools_available: [frame_sampler, scene_detect, video_understand]
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Identity, wardrobe, props, blocking, direction, action, camera, first/last frames, and handles are inspected
+      - Accepted and rejected takes are both traceable
+      - Repair action targets the observed cause
+    success_criteria:
+      - Schema-valid take_qa_report
+      - Every selected take has a usable range and no unresolved high-severity finding
+
+  - name: edit
+    skill: pipelines/narrative-movie/edit-director
+    required_artifacts_in: [scene_intent, shot_plan, asset_manifest, take_qa_report]
+    produces: [edit_decisions]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Decisions use actual performance, reactions, rhythm, continuity, and usable frames
+      - Pre-edit recommendations remain advisory rather than dictating the final cut
+    success_criteria:
+      - Schema-valid edit_decisions
+      - Only QA-accepted take ranges appear in the timeline
+
+  - name: compose
+    skill: pipelines/narrative-movie/compose-director
+    required_artifacts_in: [edit_decisions, asset_manifest]
+    optional_artifacts_in: [shot_plan, take_qa_report]
+    produces: [render_report, final_review]
+    required_tools: [video_compose, audio_mixer]
+    optional_tools: [video_stitch, video_trimmer, color_grade, audio_enhance]
+    tools_available: [video_compose, audio_mixer, video_stitch, video_trimmer, color_grade, audio_enhance]
+    checkpoint_required: true
+    human_approval_default: false
+    review_focus:
+      - Render runtime matches the approved proposal
+      - Picture and sound preserve the approved dramatic edit
+      - The finished output passes technical and visual review
+    success_criteria:
+      - Schema-valid render_report and final_review
+      - Output file exists and passes ffprobe validation
+
+  - name: publish
+    skill: pipelines/narrative-movie/publish-director
+    required_artifacts_in: [render_report, final_review]
+    produces: [publish_log]
+    tools_available: []
+    checkpoint_required: true
+    human_approval_default: true
+    review_focus:
+      - Master and derivative exports are labeled accurately
+      - Metadata and poster frame reflect the finished film
+    success_criteria:
+      - Schema-valid publish_log

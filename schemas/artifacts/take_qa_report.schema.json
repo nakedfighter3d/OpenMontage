@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openmontage/artifacts/take_qa_report",
+  "title": "Generated Take QA Report",
+  "description": "Shot-level visual QA and editorial usability assessment performed after generation and before picture editing.",
+  "type": "object",
+  "required": ["version", "id", "shot_plan_id", "takes", "selected_take_ids", "status"],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "id": { "type": "string" },
+    "shot_plan_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["pass", "partial", "revise", "blocked"] },
+    "takes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["take_id", "shot_id", "asset_id", "verdict", "findings", "recommended_action"],
+        "properties": {
+          "take_id": { "type": "string" },
+          "shot_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "verdict": { "type": "string", "enum": ["accept", "accept_with_trim", "reject"] },
+          "usable_in_seconds": { "type": "number", "minimum": 0 },
+          "usable_out_seconds": { "type": "number", "minimum": 0 },
+          "actual_entrance_state": { "type": "object" },
+          "actual_exit_state": { "type": "object" },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "severity", "note"],
+              "properties": {
+                "type": { "type": "string", "enum": ["identity", "wardrobe_prop", "blocking", "screen_direction", "action", "first_last_frame", "camera_motion", "artifact", "intent_match", "edit_handles", "audio", "other"] },
+                "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+                "note": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "recommended_action": { "type": "string", "enum": ["accept", "trim", "retry_same_prompt", "revise_prompt", "strengthen_reference", "switch_provider", "resplit_shot", "use_fallback"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "selected_take_ids": { "type": "array", "items": { "type": "string" } },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

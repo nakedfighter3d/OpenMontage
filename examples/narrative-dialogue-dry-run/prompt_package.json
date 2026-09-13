@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "id": "prompts-last-bus-seedance-v1",
+  "shot_plan_id": "shots-last-bus-v1",
+  "continuity_report_id": "continuity-last-bus-v1",
+  "compiler_version": "narrative-movie-seedance-2.5-dry-run/0.1",
+  "compiled_shots": [
+    {
+      "shot_id": "SH001",
+      "provider": "fal.ai",
+      "model": "seedance-2.5",
+      "mode": "image_to_video",
+      "prompt": "FORMAT: single continuous locked-off take, natural speed, no cuts. STARTING STATE: In a worn roadside diner booth at night, Mara sits screen-left by the dark window and Eli sits screen-right by the aisle, both seen in a medium-wide two-shot from the open end of the booth. Mara's right hand covers one sealed unmarked cream envelope. TIMELINE: Mara looks at Eli and says, \"It leaves at eleven.\" Without changing her restrained expression, she slides the envelope toward exact table center. Eli remains still and lowers his eyes to it. CAMERA: seated eye level, moderate normal field of view, both faces and the envelope path remain readable, no zoom or reframing. CONTINUITY: Mara stays screen-left looking right; Eli stays screen-right looking left; one sealed envelope only; warm practical key from camera-left and cool door spill behind Eli. AUDIO: quiet diner room tone, light rain, restrained natural dialogue, no music. ENDING STATE: the envelope has stopped at table center under Mara's fingertips while Eli looks down; hold the settled frame. CONSTRAINTS: no extra customers, no readable text, no axis crossing, no melodramatic gesture.",
+      "negative_prompt": null,
+      "parameters": {"duration_seconds": 6, "resolution": "480p", "aspect_ratio": "16:9", "audio": true},
+      "reference_bindings": [],
+      "compile_notes": ["First paid sample target", "Reference assets intentionally absent in dry run"]
+    },
+    {
+      "shot_id": "SH002",
+      "provider": "fal.ai",
+      "model": "seedance-2.5",
+      "mode": "image_to_video",
+      "prompt": "FORMAT: single continuous locked-off take, natural speed, no cuts. STARTING STATE: Medium close-up over Mara's soft foreground-left shoulder toward Eli at seated eye level; Eli remains right-of-center with look room screen-left. The camera stays on the established open-booth side of the dialogue axis. Eli looks down toward the sealed envelope below frame while Mara stays silent. TIMELINE: Eli takes a small breath and says, \"You should get there before the rain.\" He keeps his hands still and raises his eyes toward Mara only on the final word. CAMERA: normal-to-mild portrait field of view, focus on Eli's eyes, no camera motion. CONTINUITY: Eli's brown work jacket and chambray shirt remain unchanged; Mara remains screen-left; warm key stays camera-left; cool door spill remains subdued; the envelope is not touched. AUDIO: the same diner room tone and light rain, no music, Mara makes no speech sound. ENDING STATE: Eli finishes looking screen-left toward Mara and holds in quiet shame. CONSTRAINTS: no direct look to camera, no reaching for the envelope, no smile, no extra dialogue.",
+      "negative_prompt": null,
+      "parameters": {"duration_seconds": 5, "resolution": "480p", "aspect_ratio": "16:9", "audio": true},
+      "reference_bindings": [],
+      "compile_notes": ["Preserve at least 0.5 seconds of pre-line eyeline handle"]
+    },
+    {
+      "shot_id": "SH003",
+      "provider": "fal.ai",
+      "model": "seedance-2.5",
+      "mode": "image_to_video",
+      "prompt": "FORMAT: single continuous locked-off insert, natural speed, no cuts. STARTING STATE: Close insert from slightly above the diner tabletop on the established camera side. One sealed unmarked cream envelope sits at exact center under Mara's fingertips entering from frame-left; Eli's still hand rests near a coffee cup at frame-right. TIMELINE: After a clean moment of stillness, Mara slowly withdraws her fingertips screen-left. Eli's hand does not move. CAMERA: shallow downward angle, normal close-focus perspective, envelope and fingertips sharp, no pan, tilt, zoom, or rack focus. CONTINUITY: one sealed envelope only; Mara-left and Eli-right hand positions never reverse; warm overhead practical reflection stays soft on the laminate. AUDIO: continuous diner room tone and light rain, no dialogue, no music. ENDING STATE: Mara's hand has settled outside frame-left and the untouched envelope remains alone at table center; hold it. CONSTRAINTS: no hand reaches for the envelope, no opening, no writing or logo, no duplicate envelope.",
+      "negative_prompt": null,
+      "parameters": {"duration_seconds": 3, "resolution": "480p", "aspect_ratio": "16:9", "audio": true},
+      "reference_bindings": [],
+      "compile_notes": ["Boundary fallback shot", "Favor stable prop geometry over expressive hand motion"]
+    },
+    {
+      "shot_id": "SH004",
+      "provider": "fal.ai",
+      "model": "seedance-2.5",
+      "mode": "image_to_video",
+      "prompt": "FORMAT: single continuous performance take, natural speed, no cuts. STARTING STATE: Close-up over Eli's soft foreground-right shoulder toward Mara, seated eye level, Mara left-of-center with look room screen-right. She looks down toward the untouched envelope below frame. TIMELINE: Mara remains still, takes one small breath, raises her eyes toward Eli, and says, \"I know.\" She holds his eyeline afterward without accusation or tears. CAMERA: mild portrait field of view; begin a very slow ten-centimeter physical push on her breath and stop before the line ends; no zoom. CONTINUITY: Mara's short dark hair, left-eyebrow scar, dark green coat, and cream blouse remain unchanged; she looks screen-right; warm key remains camera-left and the window side of her face falls gently into shadow. AUDIO: same diner room tone and rain, Mara's quiet natural line, Eli remains silent, no music. ENDING STATE: Mara holds Eli's eyeline in resolved sadness; hold one second after the line. CONSTRAINTS: no crying, smile, head turn, camera-facing gaze, axis crossing, or additional dialogue.",
+      "negative_prompt": null,
+      "parameters": {"duration_seconds": 5, "resolution": "480p", "aspect_ratio": "16:9", "audio": true},
+      "reference_bindings": [],
+      "compile_notes": ["Push must be physical translation, not zoom", "Tail handle is essential for final pacing"]
+    }
+  ],
+  "metadata": {
+    "example": true,
+    "dry_run": true,
+    "generation_calls": 0,
+    "provider_skill": ".agents/skills/seedance-2-5/SKILL.md"
+  }
+}
